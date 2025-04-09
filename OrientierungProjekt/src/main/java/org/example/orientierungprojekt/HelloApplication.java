@@ -1,12 +1,19 @@
 package org.example.orientierungprojekt;
 
 import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,26 +22,37 @@ public class HelloApplication extends Application {
     private List<Particle> particles = new ArrayList<>();
 
     @Override
-    public void start(Stage stage) {
-        // Create a Canvas
+    public void start(Stage stage) throws IOException {
+        // Canvas vorbereiten
         Canvas canvas = new Canvas(800, 600);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        // Create a Pane to hold the Canvas
-        Pane root = new Pane(canvas);
-        Scene scene = new Scene(root);
+        // FXML laden (das UI-Overlay mit fester Höhe)
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
+        Parent fxmlOverlay = loader.load(); // nicht casten zu Region!
 
-        // Initialize particles
-        initializeParticles();
+        // BorderPane = oben UI, center Canvas
+        BorderPane root = new BorderPane();
+        root.setTop(fxmlOverlay);        // UI-Leiste oben
+        root.setCenter(canvas);          // Simulation im Hauptbereich
 
-        // Draw particles
-        drawParticles(gc);
-
-        // Set up the Stage
-        stage.setTitle("2D Particle System");
+        // Szene & Fenster
+        Scene scene = new Scene(root, 800, 600);
+        stage.setTitle("2D Particle System mit UI-Leiste");
         stage.setScene(scene);
         stage.show();
+
+        // Partikel vorbereiten
+        initializeParticles();
+        drawParticles(gc);
     }
+
+
+
+
+
+
+
 
     private void initializeParticles() {
         // Add some particles to the list
