@@ -2,6 +2,7 @@ package org.example.orientierungprojekt;
 
 import org.example.orientierungprojekt.util.Vector;
 
+import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.List;
@@ -13,40 +14,51 @@ public class ParticleEmitter {
     private List<Particle> particles;
     private int maxParticles;
 
+    private float angle = 0; // Angle in degrees
+
+
     public ParticleEmitter(int maxParticles, float originX, float originY) {
         this.originVector = new Vector(originX, originY);
         this.maxParticles = maxParticles;
         this.particles = new ArrayList<>(maxParticles);
     }
 
-    public void emit(float x, float y, float dx, float dy, float accX, float accY) {
-        if (particles.size() < maxParticles) {
-            Particle particle = new Particle(x, y, dx, dy, accX, accY);
+    private void emit() {
+        for(int i = 0; i < maxParticles; i++) {
+            float angleInRadians = (float) Math.toRadians(angle);
+            float speed = 1.0f; // Adjust speed as needed
+            float dx = (float) (speed * Math.cos(angleInRadians));
+            float dy = (float) (speed * Math.sin(angleInRadians));
+            Particle particle = new Particle(originVector.getX(), originVector.getY() + 25*i, dx, dy, 0, 0);
             particles.add(particle);
         }
     }
 
-    public void resetPosition() {
-        for (Particle particle : particles) {
-            particle.setPosition(originVector.getX(), originVector.getY());
-        }
+   // Update particles
+    private void update(float deltaTime) {
+    particles.removeIf(Particle::isDead); // Remove dead particles
+    for (Particle particle : particles) {
+        particle.update(deltaTime);
     }
+}   
 
-    public void update(float deltaTime) {
-        for (int i = 0; i < particles.size(); i++) {
-            Particle particle = particles.get(i);
-            particle.update(deltaTime);
-            if (particle.isDead()) {
-                particles.remove(i);
-                i--;
-            }
-        }
-    }
-
+    // Render particles
     public void render(GraphicsContext gc) {
         for (Particle particle : particles) {
             particle.draw(gc);
         }
     }
+    public void start(GraphicsContext gc) {
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight()); // Clear the canvas
 
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                emit(); // Emit new particles
+                update(10); // Update particles
+                render(gc);    // Render particles
+            }
+        };
+        timer.start();
+    }
 }

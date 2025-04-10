@@ -27,9 +27,19 @@ public class Vector {
         this.y = y;
     }
 
+    public void setVector(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
+
     public void add(Vector other) {
         this.x += other.x;
         this.y += other.y;
+    }
+
+    public void add(float x, float y) {
+        this.x += x;
+        this.y += y;
     }
 
     public void subtract(Vector other) {
@@ -37,12 +47,16 @@ public class Vector {
         this.y -= other.y;
     }
 
-    public void multiply(float scalar) {
+    public void scale(float scalar) {
         this.x *= scalar;
         this.y *= scalar;
     }
 
-    public float getLength(){
+    public Vector scaleVector(float scalar) {
+        return new Vector(this.x * scalar, this.y * scalar);
+    }
+
+    public float magnitude(){
         return (float)Math.sqrt(this.x * this.x + this.y * this.y);
     }
     

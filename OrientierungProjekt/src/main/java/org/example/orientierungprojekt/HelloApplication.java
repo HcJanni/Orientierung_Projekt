@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class HelloApplication extends Application {
@@ -17,7 +16,7 @@ public class HelloApplication extends Application {
         Parent root = loader.load();
 
         // Szene erstellen
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 1024, 768);
         stage.setTitle("2D Particle System mit UI");
         stage.setScene(scene);
         stage.show();

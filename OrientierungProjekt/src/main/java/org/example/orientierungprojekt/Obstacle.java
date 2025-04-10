@@ -1,7 +1,8 @@
 package org.example.orientierungprojekt;
 
 import org.example.orientierungprojekt.util.Vector;
-import javafx.scene.canvas.GraphicsContext; 
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color; 
 
 public class Obstacle {
 
@@ -12,7 +13,7 @@ public class Obstacle {
 
     public Obstacle(float x, float y) {
         this.position = new Vector(x, y);
-        this.radius = 10.0f; // Default, kann angepasst werden
+        this.radius = 50.f; // Default, kann angepasst werden
         this.repelForce = 0.5f; // Default, kann angepasst werden
     }
 
@@ -42,7 +43,7 @@ public class Obstacle {
     }
 
     public void draw(GraphicsContext gc) {
-        gc.setFill(javafx.scene.paint.Color.RED); // Farbe des Hindernisses
+        gc.setFill(Color.RED); // Farbe des Hindernisses
         gc.fillOval(position.getX() - radius, position.getY() - radius, radius * 2, radius * 2);
     }
 

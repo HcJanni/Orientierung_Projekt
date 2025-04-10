@@ -9,7 +9,7 @@ public class Particle {
     private Vector velocity;
     private Vector acceleration;
 
-    private final float radius = 5.0f;
+    private final float radius = 7.5f;
     private final float mass = 1.0f;
     private boolean isDead;
     private float lifespan;
@@ -19,7 +19,7 @@ public class Particle {
         this.velocity = new Vector(dx, dy);
         this.acceleration = new Vector(accX, accY);
         this.isDead = false;
-        this.lifespan = 500.0f;
+        this.lifespan = 10; // Lebensdauer in Sekunden
     }
 
     public Vector getPosition() {
@@ -69,14 +69,16 @@ public class Particle {
 
     public void update(float deltaTime) {
         // Update velocity based on acceleration
-        velocity.add(acceleration);
+        velocity.add(acceleration.scaleVector(deltaTime));
         
         // Update position based on velocity
-        position.add(velocity);
+        position.add(velocity.scaleVector(deltaTime));
         
         // Reset acceleration for the next frame
-        acceleration.setX(0);
-        acceleration.setY(0);
+        acceleration.setVector(0, 0);
+
+        // Decrease lifespan
+        lifespan -= deltaTime / 100; // Assuming deltaTime is in milliseconds
     }
 
 }
