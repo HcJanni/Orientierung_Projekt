@@ -30,7 +30,7 @@
             <Button fx:id="resetButton" prefWidth="160.0" text="Reset" />
 
                 <Label text="Anzahl Partikel" textFill="WHITE" />
-                <Slider fx:id="particleSlider" max="10" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="5" />
+                <Slider fx:id="particleSlider" max="1000" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="500" />
 
 
                 <Label text="Geschwindigkeit" textFill="WHITE" />
@@ -40,7 +40,7 @@
                 <Label text="Lebensdauer" textFill="WHITE" />
             <Slider fx:id="lifeSlider" layoutX="20.0" layoutY="325.0" max="10" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="5" />
             <Label layoutX="20.0" layoutY="192.0" text="Windrichtung" textFill="WHITE" />
-            <Slider fx:id="directionSlider" layoutX="20.0" layoutY="349.0" max="10" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="5" />
+            <Slider fx:id="directionSlider" layoutX="20.0" layoutY="349.0" max="50" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="25" />
 
 
                 <CheckBox text="Strömung anzeigen" textFill="WHITE" />
@@ -66,10 +66,10 @@
                     </items>
                 </ChoiceBox>
 
-                <Label fx:id="particleLabel" text="Partikel: 0" textFill="WHITE" />
-                <Label fx:id="speedLabel" text="Geschw.: 0.0" textFill="WHITE" />
-            <Label fx:id="speedLabel2" layoutX="322.0" layoutY="20.0" text="Lebensdauer.: 0.0" textFill="WHITE" />
-            <Label fx:id="speedLabel1" layoutX="322.0" layoutY="20.0" text="Windrichtung: 0.0°" textFill="WHITE" />
+                <Label fx:id="particleLabel" text="Partikel: 500" textFill="WHITE" />
+                <Label fx:id="speedLabel" text="Geschw.: 5.0" textFill="WHITE" />
+            <Label fx:id="lifeLabel" layoutX="322.0" layoutY="20.0" text="Lebensdauer.: 5.0" textFill="WHITE" />
+            <Label fx:id="directionLabel" layoutX="322.0" layoutY="20.0" text="Windrichtung: 25°" textFill="WHITE" />
             </children>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
