@@ -1,5 +1,7 @@
 package org.example.orientierungprojekt.util;
 
+import java.lang.Math.*;
+
 public class Vector {
     private float x;
     private float y;
@@ -38,6 +40,10 @@ public class Vector {
     public void multiply(float scalar) {
         this.x *= scalar;
         this.y *= scalar;
+    }
+
+    public float getLength(){
+        return (float)Math.sqrt(this.x * this.x + this.y * this.y);
     }
     
 }
