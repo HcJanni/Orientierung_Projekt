@@ -1,0 +1,14 @@
+/* Standardstil (wie in deinem Button-Style) */
+.button {
+    -fx-background-color: #415a77;
+    -fx-border-color: #e0e1dd;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #e0e1dd;
+}
+
+/* Effekt beim Drücken */
+.button:pressed {
+    -fx-background-color: #1b263b;
+    -fx-effect: dropshadow(gaussian, #ffffff33, 6, 0.3, 0, 0);
+}
