@@ -5,7 +5,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Particle {
-    private Vector position;
+
+    private final Vector originPosition;
+    private Vector currentPosition;
     private Vector velocity;
     private Vector acceleration;
 
@@ -15,15 +17,16 @@ public class Particle {
     private float lifespan;
 
     public Particle(float x, float y, float dx, float dy, float accX, float accY) {
-        this.position = new Vector(x, y);
+        this.originPosition = new Vector(x, y);
+        this.currentPosition = originPosition;
         this.velocity = new Vector(dx, dy);
         this.acceleration = new Vector(accX, accY);
         this.isDead = false;
         this.lifespan = 10; // Lebensdauer in Sekunden
     }
 
-    public Vector getPosition() {
-        return position;
+    public Vector getCurrentPosition() {
+        return currentPosition;
     }
 
     public Vector getVelocity() {
@@ -34,9 +37,9 @@ public class Particle {
         return acceleration;
     }
 
-    public void setPosition(float x, float y) {
-        this.position.setX(x);
-        this.position.setY(y);
+    public void setCurrentPosition(float x, float y) {
+        this.currentPosition.setX(x);
+        this.currentPosition.setY(y);
     }
 
     public void setVelocity(float dx, float dy) {
@@ -50,35 +53,36 @@ public class Particle {
     }
 
     public boolean isDead() {
-       if(lifespan <= 0) {
-            isDead = true;
-        } 
         return isDead;
     }
 
     public void applyForce(Vector force) {
         // F = m * a => a = F / m
-        Vector accelerationChange = new Vector(force.getX() / mass, force.getY() / mass);
-        acceleration.add(accelerationChange);
+    
+        acceleration.add(force.scaleVector(1/mass));
     }
 
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
-        gc.fillOval(position.getX(), position.getY(), radius, radius);
+        gc.fillOval(currentPosition.getX(), currentPosition.getY(), radius, radius);
     }
 
-    public void update(float deltaTime) {
+    public void updateLifespan(float deltaTime) {
+        lifespan -= deltaTime;
+        if (lifespan <= 0) {
+            isDead = true;
+        }
+    }
+
+    public void updatePosition(float deltaTime) {
         // Update velocity based on acceleration
         velocity.add(acceleration.scaleVector(deltaTime));
         
         // Update position based on velocity
-        position.add(velocity.scaleVector(deltaTime));
+        currentPosition.add(velocity.scaleVector(deltaTime));
         
         // Reset acceleration for the next frame
         acceleration.setVector(0, 0);
-
-        // Decrease lifespan
-        lifespan -= deltaTime / 100; // Assuming deltaTime is in milliseconds
     }
 
 }

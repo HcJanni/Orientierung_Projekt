@@ -1,6 +1,6 @@
 package org.example.orientierungprojekt.util;
 
-import java.lang.Math.*;
+import java.lang.Math;
 
 public class Vector {
     private float x;

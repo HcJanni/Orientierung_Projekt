@@ -14,8 +14,6 @@ public class HelloController {
 
     private ParticleEmitter particleEmitter;
 
-    private Obstacle obstacle;
-
     @FXML
     private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
 
@@ -54,11 +52,8 @@ public class HelloController {
      */
     public void startSimulation() {
         GraphicsContext gc = mainCanvas.getGraphicsContext2D();
-        particleEmitter = new ParticleEmitter(100, 0 , 0);
+        particleEmitter = new ParticleEmitter();
         particleEmitter.start(gc);
-        obstacle = new Obstacle(50, 50);
-        obstacle.draw(gc);
-
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             System.out.println("Neue Geschwindigkeit im Slider: " + newVal.floatValue());

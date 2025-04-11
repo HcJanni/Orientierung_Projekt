@@ -12,18 +12,33 @@ public class ParticleEmitter {
 
     private final Vector originVector;
     private List<Particle> particles;
-    private int maxParticles;
-
+    private final int maxParticles = 100;
+    private int maxObstacles = 10;
     private float angle = 0; // Angle in degrees
 
+    private List<Obstacle> obstacles = new ArrayList<>();
+    private Obstacle obstacle; // Optional: a single obstacle for simplicity
 
-    public ParticleEmitter(int maxParticles, float originX, float originY) {
-        this.originVector = new Vector(originX, originY);
-        this.maxParticles = maxParticles;
+    public ParticleEmitter() {
+        this.originVector = new Vector(0, 0);
         this.particles = new ArrayList<>(maxParticles);
+        this.obstacles = new ArrayList<>(maxObstacles);
+        this.obstacle = new Obstacle(250, 250);
     }
 
-    private void emit() {
+    public void addObstacle(Obstacle obstacle) {
+        this.obstacles.add(obstacle);
+    }
+
+    public void setObstacle(Obstacle obstacle) {
+        this.obstacle = obstacle;
+    }
+
+    public List<Particle> getParticles() {
+        return particles;
+    }
+    
+    private void initialize() {
         for(int i = 0; i < maxParticles; i++) {
             float angleInRadians = (float) Math.toRadians(angle);
             float speed = 1.0f; // Adjust speed as needed
@@ -38,24 +53,36 @@ public class ParticleEmitter {
     private void update(float deltaTime) {
     particles.removeIf(Particle::isDead); // Remove dead particles
     for (Particle particle : particles) {
-        particle.update(deltaTime);
+        if(obstacle != null) {
+            obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
+        }
+
+        particle.updatePosition(deltaTime);
     }
 }   
 
     // Render particles
     public void render(GraphicsContext gc) {
+
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight()); // Clear the canvas
+
+        if(obstacle != null) {
+            obstacle.draw(gc); // Draw the obstacle
+        }
+
         for (Particle particle : particles) {
             particle.draw(gc);
         }
     }
+
     public void start(GraphicsContext gc) {
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight()); // Clear the canvas
+
+        initialize(); // initialize new particles
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                emit(); // Emit new particles
-                update(10); // Update particles
+                update(0.016f * 100); // Update particles
                 render(gc);    // Render particles
             }
         };
