@@ -1,14 +1,77 @@
 /* Standardstil (wie in deinem Button-Style) */
 .button {
     -fx-background-color: #415a77;
-    -fx-border-color: #e0e1dd;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
-    -fx-text-fill: #e0e1dd;
+    -fx-text-fill: #ffffff;
 }
 
 /* Effekt beim Drücken */
 .button:pressed {
     -fx-background-color: #1b263b;
     -fx-effect: dropshadow(gaussian, #ffffff33, 6, 0.3, 0, 0);
+}
+
+/* ChoiceBox allgemeiner Stil */
+.choice-box {
+    -fx-background-color: #415a77;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-border-width: 2;
+    -fx-text-fill: white;
+}
+
+/* Text im geschlossenen Zustand */
+.choice-box .label {
+    -fx-text-fill: #ffffff;
+}
+
+/* Pfeilbereich */
+.choice-box .arrow-button {
+    -fx-background-color: #ffffff;
+}
+
+.choice-box .arrow {
+    -fx-background-color: #ffffff;
+}
+
+/* Pfeil-Hintergrund beim Hover */
+.choice-box:hover .arrow-button {
+    -fx-background-color: #2f5233;
+}
+
+/* Dropdown-Menü (Context) */
+.choice-box .context-menu {
+    -fx-background-color: #415a77;
+    -fx-border-color: #023047;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-text-fill: #ffffff;
+}
+
+/* Menüeinträge */
+.choice-box .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 6 12 6 12;
+}
+
+/* Hover-Effekt für Menüeinträge */
+.choice-box .menu-item:hover {
+    -fx-background-color: #2c3d52;
+}
+
+/* Farbe des Häkchens */
+.choice-box .menu-item:checked .checkmark {
+    -fx-background-color: white !important;
+}
+
+/* Haken bleibt auch beim Hover weiß */
+.choice-box .menu-item:checked:hover .checkmark {
+    -fx-background-color: white !important;
+}
+
+/* Absicherung: falls JavaFX auf mark-color zurückgreift */
+.choice-box .menu-item:checked {
+    -fx-mark-color: white !important;
 }
