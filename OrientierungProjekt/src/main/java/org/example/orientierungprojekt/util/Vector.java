@@ -59,5 +59,27 @@ public class Vector {
     public float magnitude(){
         return (float)Math.sqrt(this.x * this.x + this.y * this.y);
     }
+
+    public float distance(Vector other) {
+        float dx = this.x - other.x;
+        float dy = this.y - other.y;
+        return (float) Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public void normalize() {
+        float mag = magnitude();
+        if (mag != 0) {
+            this.x /= mag;
+            this.y /= mag;
+        }
+    }
+    public Vector normalizeVector() {
+        float mag = magnitude();
+        if (mag != 0) {
+            return new Vector(this.x / mag, this.y / mag);
+        } else {
+            return new Vector(0, 0); // Return zero vector if magnitude is zero
+        }
+    }
     
 }

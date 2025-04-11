@@ -11,10 +11,19 @@ public class Particle {
     private Vector velocity;
     private Vector acceleration;
 
-    private final float radius = 7.5f;
+    private final float radius = 2.0f;
     private final float mass = 1.0f;
     private boolean isDead;
     private float lifespan;
+
+    public Particle(float x, float y){
+        this.originPosition = new Vector(x, y);
+        this.currentPosition = originPosition;
+        this.velocity = new Vector(0, 0);
+        this.acceleration = new Vector(0, 0);
+        this.isDead = false;
+        this.lifespan = 120; // Lebensdauer in Sekunden
+    }
 
     public Particle(float x, float y, float dx, float dy, float accX, float accY) {
         this.originPosition = new Vector(x, y);
@@ -22,7 +31,7 @@ public class Particle {
         this.velocity = new Vector(dx, dy);
         this.acceleration = new Vector(accX, accY);
         this.isDead = false;
-        this.lifespan = 10; // Lebensdauer in Sekunden
+        this.lifespan = 120; // Lebensdauer in Sekunden
     }
 
     public Vector getCurrentPosition() {
@@ -58,7 +67,6 @@ public class Particle {
 
     public void applyForce(Vector force) {
         // F = m * a => a = F / m
-    
         acceleration.add(force.scaleVector(1/mass));
     }
 
@@ -83,6 +91,9 @@ public class Particle {
         
         // Reset acceleration for the next frame
         acceleration.setVector(0, 0);
+
+        // Update lifespan
+        // updateLifespan(deltaTime);
     }
 
 }

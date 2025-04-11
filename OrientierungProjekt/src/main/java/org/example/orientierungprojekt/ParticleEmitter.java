@@ -12,11 +12,11 @@ public class ParticleEmitter {
 
     private final Vector originVector;
     private List<Particle> particles;
-    private final int maxParticles = 100;
-    private int maxObstacles = 10;
-    private float angle = 0; // Angle in degrees
+    private final int maxParticles = 1000;
+    private final int maxObstacles = 10;
+    private float angle = 0.0f;
 
-    private List<Obstacle> obstacles = new ArrayList<>();
+    private List<Obstacle> obstacles;
     private Obstacle obstacle; // Optional: a single obstacle for simplicity
 
     public ParticleEmitter() {
@@ -26,12 +26,26 @@ public class ParticleEmitter {
         this.obstacle = new Obstacle(250, 250);
     }
 
-    public void addObstacle(Obstacle obstacle) {
-        this.obstacles.add(obstacle);
+    public void addParticle(float x, float y) {
+        if (particles.size() < maxParticles) {
+            particles.add(new Particle(originVector.getX(), originVector.getY()));
+        }
+        else {
+            System.out.println("Maximum der Partikel erreicht.");
+        }
+    }
+
+    public void addObstacle(Obstacle obstacle, float x, float y) {
+        obstacle = new Obstacle(obstacle.getPosition().getX(), obstacle.getPosition().getY());
+        if (obstacles.size() < maxObstacles) {
+            obstacles.add(obstacle);
+        } else {
+            System.out.println("Maximum der Hindernisse erreicht.");
+        }
     }
 
     public void setObstacle(Obstacle obstacle) {
-        this.obstacle = obstacle;
+        obstacle = new Obstacle(obstacle.getPosition().getX(), obstacle.getPosition().getY());
     }
 
     public List<Particle> getParticles() {
@@ -44,34 +58,38 @@ public class ParticleEmitter {
             float speed = 1.0f; // Adjust speed as needed
             float dx = (float) (speed * Math.cos(angleInRadians));
             float dy = (float) (speed * Math.sin(angleInRadians));
-            Particle particle = new Particle(originVector.getX(), originVector.getY() + 25*i, dx, dy, 0, 0);
+            Particle particle = new Particle(originVector.getX(), originVector.getY() + 5*i, dx, dy, 0, 0);
             particles.add(particle);
         }
     }
 
    // Update particles
     private void update(float deltaTime) {
+
     particles.removeIf(Particle::isDead); // Remove dead particles
+    
     for (Particle particle : particles) {
+
         if(obstacle != null) {
             obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
         }
 
         particle.updatePosition(deltaTime);
-    }
-}   
+
+        }
+    }   
 
     // Render particles
     public void render(GraphicsContext gc) {
 
-        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight()); // Clear the canvas
-
-        if(obstacle != null) {
-            obstacle.draw(gc); // Draw the obstacle
-        }
+        //gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight()); // Clear the canvas
 
         for (Particle particle : particles) {
             particle.draw(gc);
+        }
+
+        if(obstacle != null) {
+            obstacle.draw(gc); // Draw the obstacle
         }
     }
 
