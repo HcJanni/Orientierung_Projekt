@@ -27,7 +27,7 @@
                   <Button fx:id="pauseButton" prefWidth="75.0" text="Pause" />
                     </children>
                 </HBox>
-            <Button fx:id="resetButton" prefWidth="160.0" text="Reset" />
+            <Button fx:id="resetButton" prefWidth="162.0" text="Reset" />
 
                 <Label text="Anzahl Partikel" textFill="WHITE" />
                 <Slider fx:id="particleSlider" max="1000" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="500" />
