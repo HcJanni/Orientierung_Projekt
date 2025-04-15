@@ -14,10 +14,9 @@ public class ParticleEmitter {
     private List<Particle> particles;
     private final int maxParticles = 1000;
     private final int maxObstacles = 10;
-    private float angle = 0.0f;
 
     private List<Obstacle> obstacles;
-    private Obstacle obstacle; // Optional: a single obstacle for simplicity
+    private Obstacle obstacle;
 
     public ParticleEmitter() {
         this.originVector = new Vector(0, 0);
@@ -28,14 +27,14 @@ public class ParticleEmitter {
 
     public void addParticle(float x, float y) {
         if (particles.size() < maxParticles) {
-            particles.add(new Particle(originVector.getX(), originVector.getY()));
+            particles.add(new Particle(x, y, 1, 0, 0, 0)); // Initialize with zero velocity and acceleration
         }
         else {
             System.out.println("Maximum der Partikel erreicht.");
         }
     }
 
-    public void addObstacle(Obstacle obstacle, float x, float y) {
+    public void addObstacle(float x, float y) {
         obstacle = new Obstacle(obstacle.getPosition().getX(), obstacle.getPosition().getY());
         if (obstacles.size() < maxObstacles) {
             obstacles.add(obstacle);
@@ -44,27 +43,18 @@ public class ParticleEmitter {
         }
     }
 
-    public void setObstacle(Obstacle obstacle) {
-        obstacle = new Obstacle(obstacle.getPosition().getX(), obstacle.getPosition().getY());
-    }
-
     public List<Particle> getParticles() {
         return particles;
     }
     
     private void initialize() {
         for(int i = 0; i < maxParticles; i++) {
-            float angleInRadians = (float) Math.toRadians(angle);
-            float speed = 1.0f; // Adjust speed as needed
-            float dx = (float) (speed * Math.cos(angleInRadians));
-            float dy = (float) (speed * Math.sin(angleInRadians));
-            Particle particle = new Particle(originVector.getX(), originVector.getY() + 5*i, dx, dy, 0, 0);
-            particles.add(particle);
+            addParticle(this.originVector.getX(), this.originVector.getY() + 5 * i); // Initialize particles in a vertical line
         }
     }
 
    // Update particles
-    private void update(float deltaTime) {
+    private void update() {
 
     particles.removeIf(Particle::isDead); // Remove dead particles
     
@@ -74,7 +64,7 @@ public class ParticleEmitter {
             obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
         }
 
-        particle.updatePosition(deltaTime);
+        particle.updatePosition();
 
         }
     }   
@@ -100,7 +90,7 @@ public class ParticleEmitter {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update(0.016f * 100); // Update particles
+                update(); // Update particles
                 render(gc);    // Render particles
             }
         };

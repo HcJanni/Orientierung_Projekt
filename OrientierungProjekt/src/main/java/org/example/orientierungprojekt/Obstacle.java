@@ -36,15 +36,13 @@ public class Obstacle {
         return position;
     }
 
-    public float getRadius() {
-        return radius;
+    public float distanceToParticle(Particle particle){
+        
+        return particle.getCurrentPosition().distance(position); 
+
     }
 
-    public float getRepelForce() {
-        return repelForce;
-    }
-
-    public float angleToParticle(Particle particle) {
+     float angleToParticle(Particle particle) {
         float dx = position.getX() - particle.getCurrentPosition().getX();
         float dy = position.getY() - particle.getCurrentPosition().getY();
         return (float) Math.atan2(dy, dx);
@@ -67,14 +65,14 @@ public class Obstacle {
        
         float dx = position.getX() - particlePos.getX();
         float dy = position.getY() - particlePos.getY();
+        float distance = distanceToParticle(particle);
+        float distanceSquared = distance * distance;
 
-        float distanceSquared = dx * dx + dy * dy;
         if (distanceSquared < radius * radius) {
-            float distance = (float) Math.sqrt(dx * dx + dy * dy);
             if (distance > 0) {
                 float forceMagnitude = repelForce / distanceSquared; // Repulsionskraft
                 Vector force = new Vector(dx / distance * forceMagnitude, dy / distance * forceMagnitude);
-                particle.applyForce(force.normalizeVector());
+                particle.applyForce(force);
             }
         }
     }

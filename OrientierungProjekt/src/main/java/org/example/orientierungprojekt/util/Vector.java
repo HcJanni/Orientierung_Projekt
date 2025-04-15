@@ -81,5 +81,9 @@ public class Vector {
             return new Vector(0, 0); // Return zero vector if magnitude is zero
         }
     }
+
+    public float dot(Vector other) {
+        return this.x * other.x + this.y * other.y;
+    }
     
 }

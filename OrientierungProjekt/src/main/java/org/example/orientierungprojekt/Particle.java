@@ -51,6 +51,11 @@ public class Particle {
         this.currentPosition.setY(y);
     }
 
+    public void setVelocity(Vector velocity) {
+        this.velocity.setX(velocity.getX());
+        this.velocity.setY(velocity.getY());
+    }
+
     public void setVelocity(float dx, float dy) {
         this.velocity.setX(dx);
         this.velocity.setY(dy);
@@ -70,6 +75,13 @@ public class Particle {
         acceleration.add(force.scaleVector(1/mass));
     }
 
+    public void applyDrag(float dragCoefficient) {
+        // Drag force is opposite to velocity
+        Vector dragForce = new Vector(-velocity.getX(), -velocity.getY());
+        dragForce.scale(dragCoefficient);
+        applyForce(dragForce);
+    }
+
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
         gc.fillOval(currentPosition.getX(), currentPosition.getY(), radius, radius);
@@ -82,15 +94,15 @@ public class Particle {
         }
     }
 
-    public void updatePosition(float deltaTime) {
+    public void updatePosition() {
         // Update velocity based on acceleration
-        velocity.add(acceleration.scaleVector(deltaTime));
+        velocity.add(this.acceleration);
         
         // Update position based on velocity
-        currentPosition.add(velocity.scaleVector(deltaTime));
+        currentPosition.add(velocity);
         
         // Reset acceleration for the next frame
-        acceleration.setVector(0, 0);
+        acceleration.scale(0.0f);
 
         // Update lifespan
         // updateLifespan(deltaTime);
