@@ -1,4 +1,4 @@
-package org.example.orientierungprojekt;
+package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.Vector;
 
@@ -11,11 +11,13 @@ import java.util.ArrayList;
 public class ParticleEmitter {
 
     private final Vector originVector;
+
     private List<Particle> particles;
-    private final int maxParticles = 1000;
+    private List<Obstacle> obstacles;
+
+    private final int maxParticles = 500;
     private final int maxObstacles = 10;
 
-    private List<Obstacle> obstacles;
     private Obstacle obstacle;
 
     public ParticleEmitter() {
@@ -35,7 +37,7 @@ public class ParticleEmitter {
     }
 
     public void addObstacle(float x, float y) {
-        obstacle = new Obstacle(obstacle.getPosition().getX(), obstacle.getPosition().getY());
+        obstacle = new Obstacle(x, y);
         if (obstacles.size() < maxObstacles) {
             obstacles.add(obstacle);
         } else {

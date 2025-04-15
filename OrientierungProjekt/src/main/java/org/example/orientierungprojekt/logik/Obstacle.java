@@ -1,4 +1,4 @@
-package org.example.orientierungprojekt;
+package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.Vector;
 import javafx.scene.canvas.GraphicsContext;
@@ -19,6 +19,10 @@ public class Obstacle {
         this.mass = radius / 10.0f; // Default, kann angepasst werden
     }
 
+    public void setPosition(Vector position) {
+        this.position = position;
+    }
+
     public void setPosition(float x, float y) {
         this.position.setX(x);
         this.position.setY(y);
@@ -37,9 +41,7 @@ public class Obstacle {
     }
 
     public float distanceToParticle(Particle particle){
-        
-        return particle.getCurrentPosition().distance(position); 
-
+        return particle.getCurrentPosition().distance(position);
     }
 
      float angleToParticle(Particle particle) {
@@ -68,7 +70,7 @@ public class Obstacle {
         float distance = distanceToParticle(particle);
         float distanceSquared = distance * distance;
 
-        if (distanceSquared < radius * radius) {
+        if (distance <= this.radius) { // Wenn Partikel innerhalb des Hindernisses ist
             if (distance > 0) {
                 float forceMagnitude = repelForce / distanceSquared; // Repulsionskraft
                 Vector force = new Vector(dx / distance * forceMagnitude, dy / distance * forceMagnitude);

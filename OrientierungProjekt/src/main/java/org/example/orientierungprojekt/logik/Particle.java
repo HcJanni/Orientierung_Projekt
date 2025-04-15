@@ -1,4 +1,4 @@
-package org.example.orientierungprojekt;
+package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.Vector;
 import javafx.scene.canvas.GraphicsContext;
@@ -75,18 +75,6 @@ public class Particle {
         acceleration.add(force.scaleVector(1/mass));
     }
 
-    public void applyDrag(float dragCoefficient) {
-        // Drag force is opposite to velocity
-        Vector dragForce = new Vector(-velocity.getX(), -velocity.getY());
-        dragForce.scale(dragCoefficient);
-        applyForce(dragForce);
-    }
-
-    public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
-        gc.fillOval(currentPosition.getX(), currentPosition.getY(), radius, radius);
-    }
-
     public void updateLifespan(float deltaTime) {
         lifespan -= deltaTime;
         if (lifespan <= 0) {
@@ -95,17 +83,14 @@ public class Particle {
     }
 
     public void updatePosition() {
-        // Update velocity based on acceleration
         velocity.add(this.acceleration);
-        
-        // Update position based on velocity
-        currentPosition.add(velocity);
-        
-        // Reset acceleration for the next frame
+        currentPosition.add(velocity);  
         acceleration.scale(0.0f);
+    }
 
-        // Update lifespan
-        // updateLifespan(deltaTime);
+    public void draw(GraphicsContext gc) {
+        gc.setFill(Color.GREY);
+        gc.fillOval(currentPosition.getX(), currentPosition.getY(), radius, radius);
     }
 
 }

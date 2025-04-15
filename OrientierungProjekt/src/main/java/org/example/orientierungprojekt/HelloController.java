@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Label;
 
+import org.example.orientierungprojekt.logik.ParticleEmitter;
 
 public class HelloController {
 
