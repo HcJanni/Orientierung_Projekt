@@ -61,6 +61,10 @@ public class Particle {
         this.velocity.setY(dy);
     }
 
+    public void setLifespan(float seconds) {
+        this.lifespan = seconds;
+    }
+
     public void setAcceleration(float accX, float accY) {
         this.acceleration.setX(accX);
         this.acceleration.setY(accY);

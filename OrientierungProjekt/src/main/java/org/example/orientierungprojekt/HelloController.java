@@ -3,17 +3,24 @@ package org.example.orientierungprojekt;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Label;
 
 import org.example.orientierungprojekt.logik.ParticleEmitter;
+import org.example.orientierungprojekt.util.UIControl;
 
 public class HelloController {
 
     @FXML
     private Canvas mainCanvas;
 
+    @FXML
+    private Button resetButton;
+
+
     private ParticleEmitter particleEmitter;
+    private UIControl uiControl;
 
     @FXML
     private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
@@ -59,6 +66,12 @@ public class HelloController {
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             System.out.println("Neue Geschwindigkeit im Slider: " + newVal.floatValue());
         });
+        // UIControl verbinden
+        uiControl = new UIControl(
+                particleEmitter,
+                speedSlider, particleSlider, lifeSlider, directionSlider,
+                resetButton
+        );
     }
 
 }
