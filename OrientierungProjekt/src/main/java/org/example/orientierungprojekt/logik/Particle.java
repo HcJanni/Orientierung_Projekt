@@ -95,7 +95,7 @@ public class Particle {
     public void draw(GraphicsContext gc) {
         
         gc.setFill(Color.BLUE);
-        gc.strokeLine(originPosition.getX(), originPosition.getY(), originPosition.getX(), originPosition.getY());
+        gc.strokeLine(originPosition.getX(), originPosition.getY(), currentPosition.getX(), currentPosition.getY());
     }
 
 }

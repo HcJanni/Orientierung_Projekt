@@ -25,8 +25,8 @@ public class ParticleEmitter {
         this.originVector = new Vector(0, 0);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
-        this.obstacle = new Obstacle(250, 500);
-        this.obstacle2 = new Obstacle(255, 495);
+        this.obstacle = new Obstacle(250, 250, 500, 1.0f); // Example obstacle with radius and repel force
+        this.obstacle2 = new Obstacle(255, 490);
     }
 
     public void addParticle(float x, float y) {

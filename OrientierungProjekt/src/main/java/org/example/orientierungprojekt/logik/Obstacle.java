@@ -20,7 +20,7 @@ public class Obstacle {
     public Obstacle(float x, float y, float radius, float repelForce) {
         this.radius = radius;
         this.position = new Vector(x, y); // Center the obstacle at the given position
-        this.repelForce = repelForce;
+        this.repelForce = repelForce * radius / 10; // Scale the repel force with the radius
     }
 
     public void setPosition(Vector position) {
