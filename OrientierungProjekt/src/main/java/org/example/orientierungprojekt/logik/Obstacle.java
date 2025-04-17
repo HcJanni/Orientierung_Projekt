@@ -1,22 +1,26 @@
 package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.Vector;
+import static org.example.orientierungprojekt.util.SimulationConfig.GLOBAL_FLOW;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 public class Obstacle {
 
     private Vector position;
+    private float radius;
+    private float repelForce;
+    private float angleOffset = 45; // Default value
+    private float deflectionFactor = 1.0f; // Default value for deflection factor
 
-    private float mass;
-    private float radius; //Interaktion: evtl skalierbar machen
-    private float repelForce; //Interaktion: evtl skalierbar machen
 
     public Obstacle(float x, float y) {
-        this.position = new Vector(x, y);
-        this.radius = 50.f; // Default, kann angepasst werden
-        this.repelForce = 1.0f;
-        this.mass = radius / 10.0f; // Default, kann angepasst werden
+        this(x, y, 100.0f, 1.0f); // Default radius and repel force
+    }
+
+    public Obstacle(float x, float y, float radius, float repelForce) {
+        this.radius = radius;
+        this.position = new Vector(x, y); // Center the obstacle at the given position
+        this.repelForce = repelForce;
     }
 
     public void setPosition(Vector position) {
@@ -40,42 +44,59 @@ public class Obstacle {
         return position;
     }
 
-    public float distanceToParticle(Particle particle){
-        return particle.getCurrentPosition().distance(position);
+    private Vector rotateVector(Vector vector, float angleInDegrees) {
+        float angleInRadians = (float) Math.toRadians(angleInDegrees);
+        float rotatedX = vector.getX() * (float) Math.cos(angleInRadians) - vector.getY() * (float) Math.sin(angleInRadians);
+        float rotatedY = vector.getX() * (float) Math.sin(angleInRadians) + vector.getY() * (float) Math.cos(angleInRadians);
+        return new Vector(rotatedX, rotatedY);
     }
 
-     float angleToParticle(Particle particle) {
-        float dx = position.getX() - particle.getCurrentPosition().getX();
-        float dy = position.getY() - particle.getCurrentPosition().getY();
-        return (float) Math.atan2(dy, dx);
-    }
-
-    public void draw(GraphicsContext gc) {
-        gc.setFill(Color.RED); // Farbe des Hindernisses
-        gc.fillOval(position.getX() - radius, position.getY() - radius, radius * 2, radius * 2);
-    }
-
-    public boolean isInside(float x, float y) {
-        float dx = position.getX() - x;
-        float dy = position.getY() - y;
+    public boolean isInside(Vector point) {
+        float dx = position.getX() - point.getX();
+        float dy = position.getY() - point.getY();
         return (dx * dx + dy * dy) <= (radius * radius);
     }
 
     public void applyRepulsion(Particle particle) {
         Vector particlePos = particle.getCurrentPosition();
-        float angle = angleToParticle(particle);
-       
-        float dx = position.getX() - particlePos.getX();
-        float dy = position.getY() - particlePos.getY();
-        float distance = distanceToParticle(particle);
-        float distanceSquared = distance * distance;
-
-        if (distance <= this.radius) { // Wenn Partikel innerhalb des Hindernisses ist
+        float dx = particlePos.getX() - position.getX();
+        float dy = particlePos.getY() - position.getY();
+        float distanceSquared = dx * dx + dy * dy;
+    
+        // Check if the particle is within the obstacle's influence radius
+        if (distanceSquared <= radius * radius) {
+            float distance = (float) Math.sqrt(distanceSquared);
+    
+            // Avoid division by zero
             if (distance > 0) {
-                float forceMagnitude = repelForce / distanceSquared; // Repulsionskraft
-                Vector force = new Vector(dx / distance * forceMagnitude, dy / distance * forceMagnitude);
-                particle.applyForce(force);
+                // Calculate the direction of the repulsion force
+                Vector direction = new Vector(dx / distance, dy / distance);
+    
+                // Scale the force based on distance (inverse-square law)
+                float forceMagnitude = repelForce / distanceSquared;
+                Vector force = direction.scaleVector(forceMagnitude);
+    
+                // Calculate the deflected direction
+                Vector deflectedDirection = rotateVector(direction, angleOffset);
+                Vector deflectedForce = deflectedDirection.scaleVector(forceMagnitude * deflectionFactor);
+    
+                // Combine the forces
+                Vector combinedForce = force.addVector(deflectedForce);
+    
+                // Apply the combined force to the particle
+                particle.applyForce(combinedForce);
             }
         }
+
+        // Add a reunification force to steer the particle back to the global flow
+        Vector currentVelocity = particle.getVelocity();
+        Vector flowCorrection = GLOBAL_FLOW.subtractVector(currentVelocity).scaleVector(0.1f); // Adjust 0.1f for smoothness
+        particle.applyForce(flowCorrection);
+    }
+
+    public void draw(GraphicsContext gc) {
+        
+        gc.setFill(javafx.scene.paint.Color.RED); // Set the color for the obstacle
+        gc.fillOval(position.getX(), position.getY() - radius / 16, radius / 8, radius / 8); // Center the circle at the obstacle's position
     }
 }

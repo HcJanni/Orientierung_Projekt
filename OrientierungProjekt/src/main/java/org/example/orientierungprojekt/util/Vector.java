@@ -42,9 +42,17 @@ public class Vector {
         this.y += y;
     }
 
+    public Vector addVector(Vector other) {
+        return new Vector(this.x + other.x, this.y + other.y);
+    }
+
     public void subtract(Vector other) {
         this.x -= other.x;
         this.y -= other.y;
+    }
+
+    public Vector subtractVector(Vector other) {
+        return new Vector(this.x - other.x, this.y - other.y);
     }
 
     public void scale(float scalar) {

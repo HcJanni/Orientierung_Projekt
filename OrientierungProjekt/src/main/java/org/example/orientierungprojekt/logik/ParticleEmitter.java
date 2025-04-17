@@ -19,12 +19,14 @@ public class ParticleEmitter {
     private final int maxObstacles = 10;
 
     private Obstacle obstacle;
+    private Obstacle obstacle2;
 
     public ParticleEmitter() {
         this.originVector = new Vector(0, 0);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
-        this.obstacle = new Obstacle(250, 250);
+        this.obstacle = new Obstacle(250, 500);
+        this.obstacle2 = new Obstacle(255, 495);
     }
 
     public void addParticle(float x, float y) {
@@ -64,6 +66,7 @@ public class ParticleEmitter {
 
         if(obstacle != null) {
             obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
+            obstacle2.applyRepulsion(particle); // Apply repulsion from the second obstacle
         }
 
         particle.updatePosition();
@@ -82,6 +85,7 @@ public class ParticleEmitter {
 
         if(obstacle != null) {
             obstacle.draw(gc); // Draw the obstacle
+            obstacle2.draw(gc); // Draw the second obstacle
         }
     }
 
