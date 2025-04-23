@@ -19,23 +19,54 @@ public class ParticleEmitter {
     private final int maxObstacles = 10;
 
     private Obstacle obstacle;
+
+    private float particleSpeed = 5.0f;
+
+    private long lastSpawnTime = 0;
+    private long spawnInterval = 20_000_000; // alle 20ms ≈ 50 Partikel pro Sekunde
+
+    private float directionDegrees = 0.0f;
+
+    private GraphicsContext gc;
     private Obstacle obstacle2;
 
     public ParticleEmitter() {
-        this.originVector = new Vector(0, 0);
+        this.originVector = new Vector(50, 0);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
         this.obstacle = new Obstacle(250, 250, 500, 1.0f); // Example obstacle with radius and repel force
         this.obstacle2 = new Obstacle(255, 490);
     }
 
-    public void addParticle(float x, float y) {
+    /*public void addParticle(float x, float y) {
+         /*if (particles.size() >= maxParticles) {
+                particles.remove(0); // ältesten Partikel löschen
+            }
+            Particle p = new Particle(x, y, particleSpeed, 0, 0, 0);
+            p.setLifespan(particleLifetime);
+            particles.add(p);
+
+
         if (particles.size() < maxParticles) {
-            particles.add(new Particle(x, y, 1, 0, 0, 0)); // Initialize with zero velocity and acceleration
-        }
-        else {
+            Particle p = new Particle(x, y, particleSpeed, 0, 0, 0);
+            p.setLifespan(particleLifetime);
+            particles.add(p);
+        } else {
             System.out.println("Maximum der Partikel erreicht.");
         }
+    }*/
+
+    public void addParticle(float x, float y) {
+        if (particles.size() >= maxParticles) {
+            particles.remove(0); // Ältesten löschen, damit neue rein können
+        }
+
+        float radians = (float) Math.toRadians(directionDegrees);
+        float dx = (float) (Math.cos(radians) * particleSpeed);
+        float dy = (float) (Math.sin(radians) * particleSpeed);
+
+        Particle p = new Particle(x, y, dx, dy, 0, 0);
+        particles.add(p);
     }
 
     public void addObstacle(float x, float y) {
@@ -57,27 +88,25 @@ public class ParticleEmitter {
         }
     }
 
-   // Update particles
+    // Update particles
     private void update() {
 
-    particles.removeIf(Particle::isDead); // Remove dead particles
-    
-    for (Particle particle : particles) {
+        particles.removeIf(Particle::isDead); // Remove dead particles
+
+        for (Particle particle : particles) {
 
         if(obstacle != null) {
             obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
             obstacle2.applyRepulsion(particle); // Apply repulsion from the second obstacle
         }
 
-        particle.updatePosition();
+            particle.updatePosition();
 
         }
-    }   
+    }
 
     // Render particles
     public void render(GraphicsContext gc) {
-
-        //gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight()); // Clear the canvas
 
         for (Particle particle : particles) {
             particle.draw(gc);
@@ -91,6 +120,8 @@ public class ParticleEmitter {
 
     public void start(GraphicsContext gc) {
 
+        this.gc = gc;
+
         initialize(); // initialize new particles
 
         AnimationTimer timer = new AnimationTimer() {
@@ -102,4 +133,37 @@ public class ParticleEmitter {
         };
         timer.start();
     }
+
+    public void reset() {
+        if (gc != null) {
+            gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        }
+        particles.clear();
+        initialize(); // neu starten
+    }
+
+    public void setParticleSpeed(float speed) {
+        this.particleSpeed = speed;
+    }
+
+    public void setParticleDirection(float degrees) {
+        this.directionDegrees = degrees;
+    }
+
+    private boolean isOutsideCanvas(Particle p) {
+        float x = p.getCurrentPosition().getX();
+        float y = p.getCurrentPosition().getY();
+        return x < -10 || x > gc.getCanvas().getWidth() + 10
+                || y < -10 || y > gc.getCanvas().getHeight() + 10;
+    }
+
+    public void updateParticleSpeeds(float speed) {
+        for (Particle p : particles) {
+            Vector dir = p.getVelocity().normalizeVector();
+            p.setVelocity(dir.scaleVector(speed));
+        }
+    }
+
+
+
 }
