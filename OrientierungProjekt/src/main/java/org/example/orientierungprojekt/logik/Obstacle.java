@@ -44,11 +44,23 @@ public class Obstacle {
         return position;
     }
 
+    public boolean maxRadius() {
+        System.out.println("Radius ist groß genug: " + radius);
+        return radius >= 100.0f;
+    }
+
     private Vector rotateVector(Vector vector, float angleInDegrees) {
         float angleInRadians = (float) Math.toRadians(angleInDegrees);
         float rotatedX = vector.getX() * (float) Math.cos(angleInRadians) - vector.getY() * (float) Math.sin(angleInRadians);
         float rotatedY = vector.getX() * (float) Math.sin(angleInRadians) + vector.getY() * (float) Math.cos(angleInRadians);
         return new Vector(rotatedX, rotatedY);
+    }
+
+    private boolean isBehindObstacle(Particle particle) {
+        Vector particlePos = particle.getCurrentPosition();
+        float dx = position.getX() - particlePos.getX();
+        float dy = position.getY() - particlePos.getY();
+        return (dx * dx + dy * dy) > (radius * radius);
     }
 
     public boolean isInside(Vector point) {
@@ -85,9 +97,16 @@ public class Obstacle {
     
                 // Apply the combined force to the particle
                 particle.applyForce(combinedForce);
-            }
-        }
 
+                if (isBehindObstacle(particle)) {
+                    // If the particle is behind the obstacle, apply a stronger force to push it out
+                    Vector backForce = direction.scaleVector(repelForce * 2); // Adjust the multiplier for strength
+                    particle.applyForce(backForce);
+                }
+
+            }
+
+        } 
         // Add a reunification force to steer the particle back to the global flow
         Vector currentVelocity = particle.getVelocity();
         Vector flowCorrection = GLOBAL_FLOW.subtractVector(currentVelocity).scaleVector(0.1f); // Adjust 0.1f for smoothness
@@ -95,8 +114,7 @@ public class Obstacle {
     }
 
     public void draw(GraphicsContext gc) {
-        
         gc.setFill(javafx.scene.paint.Color.RED); // Set the color for the obstacle
-        gc.fillOval(position.getX(), position.getY() - radius / 16, radius / 8, radius / 8); // Center the circle at the obstacle's position
+        gc.fillOval(position.getX() - radius / 32, position.getY() - radius / 16, radius / 8, radius / 8); // Center the circle at the obstacle's position
     }
 }

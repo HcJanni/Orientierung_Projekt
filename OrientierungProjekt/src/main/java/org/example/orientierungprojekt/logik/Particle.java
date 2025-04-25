@@ -91,7 +91,7 @@ public class Particle {
         velocity.add(this.acceleration);
         currentPosition.add(velocity);  
         // Gradually align velocity with the global flow
-        Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.05f); // Adjust 0.05f for smoothness
+        Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.1f); // Adjust 0.05f for smoothness
         velocity.add(flowCorrection);
         acceleration.scale(0.0f);
     }

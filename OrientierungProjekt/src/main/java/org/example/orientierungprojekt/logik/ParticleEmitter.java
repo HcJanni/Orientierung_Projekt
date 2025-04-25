@@ -15,7 +15,7 @@ public class ParticleEmitter {
     private List<Particle> particles;
     private List<Obstacle> obstacles;
 
-    private final int maxParticles = 500;
+    private final int maxParticles = 1000;
     private final int maxObstacles = 10;
 
     private Obstacle obstacle;
@@ -84,7 +84,7 @@ public class ParticleEmitter {
     
     private void initialize() {
         for(int i = 0; i < maxParticles; i++) {
-            addParticle(this.originVector.getX(), this.originVector.getY() + 5 * i); // Initialize particles in a vertical line
+            addParticle(this.originVector.getX(), this.originVector.getY() + 3 * i); // Initialize particles in a vertical line
         }
     }
 
@@ -163,7 +163,5 @@ public class ParticleEmitter {
             p.setVelocity(dir.scaleVector(speed));
         }
     }
-
-
 
 }
