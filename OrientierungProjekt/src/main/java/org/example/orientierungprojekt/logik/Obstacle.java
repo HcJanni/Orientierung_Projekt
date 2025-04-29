@@ -1,7 +1,6 @@
 package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.Vector;
-import static org.example.orientierungprojekt.util.SimulationConfig.GLOBAL_FLOW;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Obstacle {
@@ -9,9 +8,6 @@ public class Obstacle {
     private Vector position;
     private float radius;
     private float repelForce;
-    private float angleOffset = 45; // Default value
-    private float deflectionFactor = 1.0f; // Default value for deflection factor
-
 
     public Obstacle(float x, float y) {
         this(x, y, 100.0f, 1.0f); // Default radius and repel force
@@ -44,73 +40,38 @@ public class Obstacle {
         return position;
     }
 
+    public float getX() {
+        return position.getX();
+    }
+
+    public float getY() {
+        return position.getY();
+    }
+
+    public float getRadius() {
+        return radius;
+    }
+
+    public float getRepelForce(){
+        return repelForce;
+    }
+
     public boolean maxRadius() {
         System.out.println("Radius ist groß genug: " + radius);
         return radius >= 100.0f;
     }
 
-    private Vector rotateVector(Vector vector, float angleInDegrees) {
-        float angleInRadians = (float) Math.toRadians(angleInDegrees);
-        float rotatedX = vector.getX() * (float) Math.cos(angleInRadians) - vector.getY() * (float) Math.sin(angleInRadians);
-        float rotatedY = vector.getX() * (float) Math.sin(angleInRadians) + vector.getY() * (float) Math.cos(angleInRadians);
-        return new Vector(rotatedX, rotatedY);
+    public boolean isInside(Particle particle) {
+        Vector particlePos = particle.getCurrentPosition();
+        float distance = particlePos.distanceTo(position);
+        return distance < radius;
     }
 
-    private boolean isBehindObstacle(Particle particle) {
+    public boolean isBehindObstacle(Particle particle) {
         Vector particlePos = particle.getCurrentPosition();
         float dx = position.getX() - particlePos.getX();
         float dy = position.getY() - particlePos.getY();
         return (dx * dx + dy * dy) > (radius * radius);
-    }
-
-    public boolean isInside(Vector point) {
-        float dx = position.getX() - point.getX();
-        float dy = position.getY() - point.getY();
-        return (dx * dx + dy * dy) <= (radius * radius);
-    }
-
-    public void applyRepulsion(Particle particle) {
-        Vector particlePos = particle.getCurrentPosition();
-        float dx = particlePos.getX() - position.getX();
-        float dy = particlePos.getY() - position.getY();
-        float distanceSquared = dx * dx + dy * dy;
-    
-        // Check if the particle is within the obstacle's influence radius
-        if (distanceSquared <= radius * radius) {
-            float distance = (float) Math.sqrt(distanceSquared);
-    
-            // Avoid division by zero
-            if (distance > 0) {
-                // Calculate the direction of the repulsion force
-                Vector direction = new Vector(dx / distance, dy / distance);
-    
-                // Scale the force based on distance (inverse-square law)
-                float forceMagnitude = repelForce / distanceSquared;
-                Vector force = direction.scaleVector(forceMagnitude);
-    
-                // Calculate the deflected direction
-                Vector deflectedDirection = rotateVector(direction, angleOffset);
-                Vector deflectedForce = deflectedDirection.scaleVector(forceMagnitude * deflectionFactor);
-    
-                // Combine the forces
-                Vector combinedForce = force.addVector(deflectedForce);
-    
-                // Apply the combined force to the particle
-                particle.applyForce(combinedForce);
-
-                if (isBehindObstacle(particle)) {
-                    // If the particle is behind the obstacle, apply a stronger force to push it out
-                    Vector backForce = direction.scaleVector(repelForce * 2); // Adjust the multiplier for strength
-                    particle.applyForce(backForce);
-                }
-
-            }
-
-        } 
-        // Add a reunification force to steer the particle back to the global flow
-        Vector currentVelocity = particle.getVelocity();
-        Vector flowCorrection = GLOBAL_FLOW.subtractVector(currentVelocity).scaleVector(0.1f); // Adjust 0.1f for smoothness
-        particle.applyForce(flowCorrection);
     }
 
     public void draw(GraphicsContext gc) {

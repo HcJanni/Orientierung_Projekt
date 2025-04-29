@@ -61,11 +61,7 @@ public class ParticleEmitter {
             particles.remove(0); // Ältesten löschen, damit neue rein können
         }
 
-        float radians = (float) Math.toRadians(directionDegrees);
-        float dx = (float) (Math.cos(radians) * particleSpeed);
-        float dy = (float) (Math.sin(radians) * particleSpeed);
-
-        Particle p = new Particle(x, y, dx, dy, 0, 0);
+        Particle p = new Particle(x, y);
         particles.add(p);
     }
 
@@ -96,8 +92,8 @@ public class ParticleEmitter {
         for (Particle particle : particles) {
 
         if(obstacle != null) {
-            obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
-            obstacle2.applyRepulsion(particle); // Apply repulsion from the second obstacle
+          //  obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
+          //  obstacle2.applyRepulsion(particle); // Apply repulsion from the second obstacle
         }
 
             particle.updatePosition();
@@ -150,7 +146,7 @@ public class ParticleEmitter {
         this.directionDegrees = degrees;
     }
 
-    private boolean isOutsideCanvas(Particle p) {
+    public boolean isOutsideCanvas(Particle p) {
         float x = p.getCurrentPosition().getX();
         float y = p.getCurrentPosition().getY();
         return x < -10 || x > gc.getCanvas().getWidth() + 10
@@ -159,7 +155,7 @@ public class ParticleEmitter {
 
     public void updateParticleSpeeds(float speed) {
         for (Particle p : particles) {
-            Vector dir = p.getVelocity().normalizeVector();
+            Vector dir = p.getVelocity().getNormalizedVector();
             p.setVelocity(dir.scaleVector(speed));
         }
     }

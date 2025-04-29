@@ -7,27 +7,31 @@ import javafx.scene.paint.Color;
 
 public class Particle {
 
-    private final Vector originPosition;
+    private Vector originPosition; // die Ursprungsposition des Partikels für den Reset
     private Vector currentPosition;
-    private Vector velocity;
-    private Vector acceleration;
+    private Vector velocity; //Aenderungsrate der Position
+    //private Vector velocityAngle; //Aenderungsrate der Position in Grad
+    private Vector acceleration; //Aenderungsrate der Geschwindigkeit
+    //private Vector accelerationAngle; //Aenderungsrate der Geschwindigkeit in Grad
 
-    private final float RADIUS = 8.0f;
+    //private final float RADIUS = 5.0f;
     private final float MASS = 1.0f;
     private boolean isDead;
     private float lifespan;
 
-    public Particle(float x, float y){
-        this(x,y,0,0,0,0);
+    public Particle(){
+        this.originPosition = new Vector(0, 0);
+        this.currentPosition = new Vector(0, 0);
+        this.velocity = new Vector(0, 0);
+        //this.velocityAngle = new Vector(0, 0);
+        this.acceleration = new Vector(0, 0);
+        //this.accelerationAngle = new Vector(0, 0);
+        this.lifespan = 1.0f; // Default lifespan of 1 second
+        this.isDead = false;
     }
 
-    public Particle(float x, float y, float dx, float dy, float accX, float accY) {
-        this.originPosition = new Vector(x - RADIUS / 2, y - RADIUS / 2);
-        this.currentPosition = originPosition;
-        this.velocity = new Vector(dx, dy);
-        this.acceleration = new Vector(accX, accY);
-        this.isDead = false;
-        this.lifespan = 120;
+    public Particle(float x, float y){
+        this.originPosition.setVector(x, y);
     }
 
     public Vector getCurrentPosition() {
@@ -36,10 +40,6 @@ public class Particle {
 
     public Vector getVelocity() {
         return this.velocity;
-    }
-
-    public Vector getAcceleration() {
-        return acceleration;
     }
 
     public void setCurrentPosition(float x, float y) {
@@ -61,11 +61,6 @@ public class Particle {
         this.lifespan = seconds;
     }
 
-    public void setAcceleration(float accX, float accY) {
-        this.acceleration.setX(accX);
-        this.acceleration.setY(accY);
-    }
-
     public void resetToOrigin() {
         this.currentPosition.setX(originPosition.getX());
         this.currentPosition.setY(originPosition.getY());
@@ -75,11 +70,6 @@ public class Particle {
         return isDead;
     }
 
-    public void applyForce(Vector force) {
-        // F = m * a => a = F / m
-        acceleration.add(force.scaleVector(1/MASS));
-    }
-
     public void updateLifespan(float deltaTime) {
         lifespan -= deltaTime;
         if (lifespan <= 0) {
@@ -87,17 +77,22 @@ public class Particle {
         }
     }
 
+    public void applyForce(Vector force) {
+        // F = m * a => a = F / m
+        this.acceleration.add(force.scaleVector(1/MASS));
+    }
+
     public void updatePosition() {
+        //newPosition = currentPosition + velocity * deltaTime
         velocity.add(this.acceleration);
-        currentPosition.add(velocity);  
+        currentPosition.add(this.velocity);  
         // Gradually align velocity with the global flow
-        Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.1f); // Adjust 0.05f for smoothness
+        Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
         velocity.add(flowCorrection);
         acceleration.scale(0.0f);
     }
 
     public void draw(GraphicsContext gc) {
-        
         gc.setFill(Color.BLUE);
         gc.strokeLine(originPosition.getX(), originPosition.getY(), currentPosition.getX(), currentPosition.getY());
     }
