@@ -22,16 +22,23 @@ public class Particle {
     public Particle(){
         this.originPosition = new Vector(0, 0);
         this.currentPosition = new Vector(0, 0);
-        this.velocity = new Vector(0, 0);
+        this.velocity = new Vector(1, 0);
+        this.acceleration = new Vector(1, 0);
         //this.velocityAngle = new Vector(0, 0);
-        this.acceleration = new Vector(0, 0);
         //this.accelerationAngle = new Vector(0, 0);
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
     }
 
     public Particle(float x, float y){
-        this.originPosition.setVector(x, y);
+        this.originPosition = new Vector(x ,y);
+        this.currentPosition = new Vector(0, 0);
+        this.velocity = new Vector(1, 0);
+        //this.velocityAngle = new Vector(0, 0);
+        this.acceleration = new Vector(1, 0);
+        //this.accelerationAngle = new Vector(0, 0);
+        this.lifespan = 1.0f; // Default lifespan of 1 second
+        this.isDead = false;
     }
 
     public Vector getCurrentPosition() {
@@ -65,11 +72,7 @@ public class Particle {
         this.currentPosition.setX(originPosition.getX());
         this.currentPosition.setY(originPosition.getY());
     }
-
-    public boolean isDead() {
-        return isDead;
-    }
-
+        
     public void updateLifespan(float deltaTime) {
         lifespan -= deltaTime;
         if (lifespan <= 0) {
@@ -84,17 +87,17 @@ public class Particle {
 
     public void updatePosition() {
         //newPosition = currentPosition + velocity * deltaTime
-        velocity.add(this.acceleration);
-        currentPosition.add(this.velocity);  
+        this.velocity.add(this.acceleration);
+        this.currentPosition.add(this.velocity);
         // Gradually align velocity with the global flow
-        Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
-        velocity.add(flowCorrection);
-        acceleration.scale(0.0f);
+        //Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
+       // velocity.add(flowCorrection);
+        this.acceleration.scale(0.0f);
     }
 
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
-        gc.strokeLine(originPosition.getX(), originPosition.getY(), currentPosition.getX(), currentPosition.getY());
+        gc.strokeOval(currentPosition.getX(), currentPosition.getY(), 1, 1); // (x,y,hoehe,breite) Einfach ein Punkt
     }
 
 }

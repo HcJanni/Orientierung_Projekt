@@ -10,14 +10,13 @@ public class Obstacle {
     private float repelForce;
 
     public Obstacle(float x, float y) {
-        this(x, y, 100.0f, 1.0f); // Default radius and repel force
+        this(x, y, 100.0f); // Default radius and repel force
     }
 
-    public Obstacle(float x, float y, float radius, float repelForce) {
+    public Obstacle(float x, float y, float radius) {
         this.radius = radius;
         this.position = new Vector(x, y); // Center the obstacle at the given position
-        this.repelForce = repelForce * radius / 10; // Scale the repel force with the radius
-    }
+        }
 
     public void setPosition(Vector position) {
         this.position = position;
@@ -59,6 +58,12 @@ public class Obstacle {
     public boolean maxRadius() {
         System.out.println("Radius ist groß genug: " + radius);
         return radius >= 100.0f;
+    }
+
+    public boolean isInside(Obstacle obs){
+        Vector obsPos = obs.getPosition();
+        float distance = obsPos.distanceTo(position);
+        return distance < radius;
     }
 
     public boolean isInside(Particle particle) {

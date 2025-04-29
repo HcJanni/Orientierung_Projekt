@@ -34,7 +34,7 @@ public class UIControl {
     private void setupListeners() {
         resetButton.setOnAction(e -> {
             System.out.println("Reset gedrückt");
-            emitter.reset(); // Diese Methode musst du noch in ParticleEmitter implementieren
+            //emitter.reset(); // Diese Methode musst du noch in ParticleEmitter implementieren
         });
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class ParticleEmitter {
 
     private final Vector originVector;
+    //private RepulsionHandler repulsionHandler;
 
     private List<Particle> particles;
     private List<Obstacle> obstacles;
@@ -18,43 +19,21 @@ public class ParticleEmitter {
     private final int maxParticles = 1000;
     private final int maxObstacles = 10;
 
-    private Obstacle obstacle;
-
     private float particleSpeed = 5.0f;
 
-    private long lastSpawnTime = 0;
-    private long spawnInterval = 20_000_000; // alle 20ms ≈ 50 Partikel pro Sekunde
+    //private int lastSpawnTime = 0;
+    //private int spawnInterval = 20_000_000; // alle 20ms ≈ 50 Partikel pro Sekunde
 
     private float directionDegrees = 0.0f;
 
     private GraphicsContext gc;
-    private Obstacle obstacle2;
 
     public ParticleEmitter() {
-        this.originVector = new Vector(50, 0);
+        this.originVector = new Vector(0, 0);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
-        this.obstacle = new Obstacle(250, 250, 500, 1.0f); // Example obstacle with radius and repel force
-        this.obstacle2 = new Obstacle(255, 490);
+     //   repulsionHandler = new RepulsionHandler();
     }
-
-    /*public void addParticle(float x, float y) {
-         /*if (particles.size() >= maxParticles) {
-                particles.remove(0); // ältesten Partikel löschen
-            }
-            Particle p = new Particle(x, y, particleSpeed, 0, 0, 0);
-            p.setLifespan(particleLifetime);
-            particles.add(p);
-
-
-        if (particles.size() < maxParticles) {
-            Particle p = new Particle(x, y, particleSpeed, 0, 0, 0);
-            p.setLifespan(particleLifetime);
-            particles.add(p);
-        } else {
-            System.out.println("Maximum der Partikel erreicht.");
-        }
-    }*/
 
     public void addParticle(float x, float y) {
         if (particles.size() >= maxParticles) {
@@ -66,59 +45,57 @@ public class ParticleEmitter {
     }
 
     public void addObstacle(float x, float y) {
-        obstacle = new Obstacle(x, y);
-        if (obstacles.size() < maxObstacles) {
-            obstacles.add(obstacle);
-        } else {
-            System.out.println("Maximum der Hindernisse erreicht.");
-        }
+        if (obstacles.size() >= maxObstacles) {
+            obstacles.remove(0);
+        } 
+        
+        Obstacle obs = new Obstacle(x, y);
+        obstacles.add(obs);
     }
 
     public List<Particle> getParticles() {
         return particles;
     }
+
+    public List<Obstacle> getObstacles() {
+        return obstacles;
+    }
     
     private void initialize() {
         for(int i = 0; i < maxParticles; i++) {
-            addParticle(this.originVector.getX(), this.originVector.getY() + 3 * i); // Initialize particles in a vertical line
+            addParticle(this.originVector.getX(), this.originVector.getY() + 3 * i); // Partikel werden in vertikaler Linie initialisieren
+        }
+
+        for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
+            addObstacle( (float) Math.random() * 500 + i, (float) Math.random() * 500 + i );
         }
     }
 
     // Update particles
     private void update() {
-
-        particles.removeIf(Particle::isDead); // Remove dead particles
-
         for (Particle particle : particles) {
-
-        if(obstacle != null) {
-          //  obstacle.applyRepulsion(particle); // Apply repulsion from the obstacle
-          //  obstacle2.applyRepulsion(particle); // Apply repulsion from the second obstacle
-        }
-
             particle.updatePosition();
-
         }
     }
 
-    // Render particles
+    // Render particles and obstacles
     public void render(GraphicsContext gc) {
 
         for (Particle particle : particles) {
             particle.draw(gc);
         }
 
-        if(obstacle != null) {
-            obstacle.draw(gc); // Draw the obstacle
-            obstacle2.draw(gc); // Draw the second obstacle
+        for(Obstacle obstacle : obstacles){
+            obstacle.draw(gc);
         }
+        
     }
 
     public void start(GraphicsContext gc) {
 
         this.gc = gc;
 
-        initialize(); // initialize new particles
+        initialize(); // initialize particles and obstacles
 
         AnimationTimer timer = new AnimationTimer() {
             @Override
@@ -127,15 +104,9 @@ public class ParticleEmitter {
                 render(gc);    // Render particles
             }
         };
-        timer.start();
-    }
 
-    public void reset() {
-        if (gc != null) {
-            gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        }
-        particles.clear();
-        initialize(); // neu starten
+        timer.start();
+
     }
 
     public void setParticleSpeed(float speed) {
@@ -159,5 +130,4 @@ public class ParticleEmitter {
             p.setVelocity(dir.scaleVector(speed));
         }
     }
-
 }
