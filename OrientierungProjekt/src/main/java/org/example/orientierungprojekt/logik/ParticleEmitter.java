@@ -62,6 +62,8 @@ public class ParticleEmitter {
     }
     
     private void initialize() {
+        gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
         for(int i = 0; i < maxParticles; i++) {
             addParticle(this.originVector.getX(), this.originVector.getY() + 3 * i); // Partikel werden in vertikaler Linie initialisieren
         }
@@ -74,7 +76,15 @@ public class ParticleEmitter {
     // Update particles
     private void update() {
         for (Particle particle : particles) {
+            if(particle.isDead()){
+                gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+                particle.resetToOrigin();
+                particle.setVelocity(1,0);
+                particle.setLifespan(1.0f);
+                particle.setDead(false);
+            }
             particle.updatePosition();
+            particle.updateLifespan(0.0016f);
         }
     }
 
@@ -118,8 +128,8 @@ public class ParticleEmitter {
     }
 
     public boolean isOutsideCanvas(Particle p) {
-        float x = p.getCurrentPosition().getX();
-        float y = p.getCurrentPosition().getY();
+        float x = p.getPosition().getX();
+        float y = p.getPosition().getY();
         return x < -10 || x > gc.getCanvas().getWidth() + 10
                 || y < -10 || y > gc.getCanvas().getHeight() + 10;
     }

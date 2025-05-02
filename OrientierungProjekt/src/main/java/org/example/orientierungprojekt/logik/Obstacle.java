@@ -67,13 +67,13 @@ public class Obstacle {
     }
 
     public boolean isInside(Particle particle) {
-        Vector particlePos = particle.getCurrentPosition();
+        Vector particlePos = particle.getPosition();
         float distance = particlePos.distanceTo(position);
         return distance < radius;
     }
 
     public boolean isBehindObstacle(Particle particle) {
-        Vector particlePos = particle.getCurrentPosition();
+        Vector particlePos = particle.getPosition();
         float dx = position.getX() - particlePos.getX();
         float dy = position.getY() - particlePos.getY();
         return (dx * dx + dy * dy) > (radius * radius);

@@ -11,7 +11,7 @@ public class RepulsionHandler {
 
     public void applyRepulsion(Particle particle, Obstacle obstacle) {
         
-            Vector particlePos = particle.getCurrentPosition();
+            Vector particlePos = particle.getPosition();
             Vector obstaclePos = obstacle.getPosition();
 
             float distance = obstaclePos.distanceTo(particlePos);

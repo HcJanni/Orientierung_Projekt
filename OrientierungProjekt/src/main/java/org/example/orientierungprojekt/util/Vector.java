@@ -3,6 +3,11 @@ package org.example.orientierungprojekt.util;
 import java.lang.Math;
 
 public class Vector {
+
+    /*
+     * Implementation mit Hilfe von: thenatureofcode.com und Mathebuch, irgendwas keinen Plan, muss ich mal raussuchen
+     */
+    
     private float x;
     private float y;
 
@@ -116,15 +121,18 @@ public class Vector {
         return this.x * other.x + this.y * other.y;
     }
 
+    public void rotateVector(float angle) {
+        float newX = this.x * (float) Math.cos(angle) - this.y * (float) Math.sin(angle);
+        float newY = this.x * (float) Math.sin(angle) + this.y * (float) Math.cos(angle);
+        this.x = newX;
+        this.y = newY;
+    }
+
     public float getAngle(Vector v1, Vector v2) {
         float dotProduct = v1.dot(v2);
         float magnitudeV1 = v1.magnitude();
         float magnitudeV2 = v2.magnitude();
         return (float) Math.acos(dotProduct / (magnitudeV1 * magnitudeV2));
-    }
-    
-    public float getAngleDegrees(Vector v1, Vector v2) {
-        return (float) Math.toDegrees(getAngle(v1, v2));
     }
     
 }
