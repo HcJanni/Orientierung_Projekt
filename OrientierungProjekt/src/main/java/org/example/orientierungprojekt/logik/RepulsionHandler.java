@@ -1,55 +1,59 @@
 package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.Vector;
-import static org.example.orientierungprojekt.util.SimulationConfig.GLOBAL_FLOW;;
+import static org.example.orientierungprojekt.util.SimulationConfig.*;
 
 public class RepulsionHandler {
 
     //Hilfsklasse zur Berechnung der Kollisionen
 
-    private float repelForce;
+    private static float repelForce = -1.0f;
+    private static float deflectionFactor = 1.0f;
+    private static float angleOffset = 2.0f;
+    private static final float FLOW_CORRECTION_SCALE = 1.0f;
+    private static final float BACK_FORCE_MULTIPLIER = 1.0f;
 
     public void applyRepulsion(Particle particle, Obstacle obstacle) {
         
-            Vector particlePos = particle.getPosition();
-            Vector obstaclePos = obstacle.getPosition();
+        float obstacleOffset = obstacle.getRadius() / 16; //Durch 16 teilen für Offset beim Zeichnen
 
-            float distance = obstaclePos.distanceTo(particlePos);
-            float distanceSquared = distance * distance;
-            float radius = obstacle.getRadius();
-        
-            // Check if the particle is within the obstacle's influence radius
-           // if (distanceSquared <= radius * radius) {
-        
-                // Avoid division by zero
-                //if (distance > 0) {
-                    // Calculate the direction of the repulsion force
-                   // Vector direction = new Vector(dx / distance, dy / distance);
-        
-                    // Scale the force based on distance (inverse-square law)
-                   // float forceMagnitude = repelForce / distanceSquared;
-                   // Vector force = direction.scaleVector(forceMagnitude);
-        
-                    // Calculate the deflected direction
-                   // Vector deflectedDirection = rotateVector(direction, angleOffset);
-                    //Vector deflectedForce = deflectedDirection.scaleVector(forceMagnitude * deflectionFactor);
-        
-                    // Combine the forces
-                    //Vector combinedForce = force.addVector(deflectedForce);
-        
-                    // Apply the combined force to the particle
-                    //particle.applyForce(combinedForce);
+        Vector particlePos = particle.getPosition();
+        Vector obstaclePos = obstacle.getPosition().subtractVector(obstacleOffset, 0);
     
-                   // if (obstacle.isBehindObstacle(particle)) {
-                        // If the particle is behind the obstacle, apply a stronger force to push it out
-                      //  Vector backForce = direction.scaleVector(repelForce * 2); // Adjust the multiplier for strength
-                      //  particle.applyForce(backForce);
-                  //  }
-               // }
-            //} 
-            // Add a reunification force to steer the particle back to the global flow
-           // Vector currentVelocity = particle.getVelocity();
-           // Vector flowCorrection = GLOBAL_FLOW.subtractVector(currentVelocity).scaleVector(0.1f); // Adjust 0.1f for smoothness
-           // particle.applyForce(flowCorrection);
+        float distance = obstaclePos.distanceTo(particlePos);
+        float distanceSquared = distance * distance;
+        float radius = obstacle.getRadius();
+    
+        if (distanceSquared <= radius * radius) {
+            if (distance > 0.0001f) {
+                Vector direction = obstaclePos.getDistanceVector(particlePos).getNormalizedVector();
+                // Repulsion force
+                float forceMagnitude = repelForce / distanceSquared;
+                Vector force = direction.scaleVector(forceMagnitude);
+    
+                // Deflection force
+                Vector deflectedDirectionVector = new Vector(direction).rotateVector(angleOffset);
+
+                Vector deflectedForce = deflectedDirectionVector.scaleVector(forceMagnitude * deflectionFactor);
+    
+                // Combine forces
+                Vector combinedForce = force.addVector(deflectedForce);
+                particle.applyForce(combinedForce);
+                
+                // Stronger force if behind the obstacle
+                if (obstacle.isBehindObstacle(particle)) {
+                    Vector backForce = direction.scaleVector(repelForce * BACK_FORCE_MULTIPLIER);
+                    particle.applyForce(backForce);
+                }
+            }
+    
+            // Reunification force
+            Vector currentVelocity = particle.getVelocity();
+            float correctionStrength = Math.min(1.0f, distance / (radius * 2));
+            Vector flowCorrection = GLOBAL_FLOW.subtractVector(currentVelocity).scaleVector(correctionStrength * 2 * FLOW_CORRECTION_SCALE);
+            particle.applyForce(flowCorrection);
         }
+
+    }
+
 }

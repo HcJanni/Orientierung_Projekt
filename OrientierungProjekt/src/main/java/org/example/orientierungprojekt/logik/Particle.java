@@ -20,8 +20,10 @@ public class Particle {
     private float angleVelocity; //Aenderungsrate der Position mit Hilfe eines Winkels
     private float angleAcceleration; //Aenderungsrate der Geschwindigkeit mit Hilfe eines Winkels
 
-    //private final float RADIUS = 5.0f;
+    private final float DURCHMESSER = 10.0f;
+    private final float RADIUS = DURCHMESSER / 2.0f;
     private final float MASS = 1.0f;
+
     private boolean isDead;
     private float lifespan;
 
@@ -38,8 +40,10 @@ public class Particle {
     }
 
     public Particle(float x, float y){
+        x -= RADIUS;
+        y -= RADIUS;
         this.originPosition = new Vector(x, y);
-        this.position = new Vector(x,y);
+        this.position = new Vector(x, y);
         this.velocity = new Vector(1, 0);
         this.acceleration = new Vector(0, 0);
         this.angle = 0.0f;
@@ -55,6 +59,10 @@ public class Particle {
 
     public Vector getVelocity() {
         return this.velocity;
+    }
+
+    public float getRadius(){
+        return this.RADIUS;
     }
 
     public void setPosition(float x, float y) {
@@ -95,6 +103,41 @@ public class Particle {
         return this.isDead;
     }
 
+    public boolean isOverlapping(Particle other) {
+        float distance = this.position.distanceTo(other.getPosition());
+        return distance < (this.getRadius() + other.getRadius());
+    }
+
+    public void particleBounce(Particle other){
+
+        if (isOverlapping(other)) {
+            // Calculate the direction of the collision
+            Vector collisionNormal = this.position.getDistanceVector(other.getPosition()).getNormalizedVector();
+    
+            // Relative velocity
+            Vector relativeVelocity = this.velocity.subtractVector(other.getVelocity());
+    
+            // Calculate the velocity along the collision normal
+            float velocityAlongNormal = relativeVelocity.dot(collisionNormal);
+    
+            // If the particles are moving away from each other, no collision response
+            if (velocityAlongNormal > 0) {
+                return;
+            }
+    
+            // Calculate restitution (elasticity of the collision)
+            float restitution = 1.0f; // Perfectly elastic collision
+    
+            // Impulse scalar
+            float impulseScalar = -(1 + restitution) * velocityAlongNormal / (1 / this.MASS + 1 / other.MASS);
+    
+            // Apply impulse to both particles
+            Vector impulse = collisionNormal.scaleVector(impulseScalar);
+            this.velocity.add(impulse.scaleVector(1 / this.MASS));
+            other.velocity.subtract(impulse.scaleVector(1 / other.MASS));
+        }
+    }
+
     public void applyForce(Vector force) {
         // F = m * a => a = F / m
         this.acceleration.add(force.scaleVector(1/MASS));
@@ -105,8 +148,8 @@ public class Particle {
         this.velocity.add(this.acceleration);
         this.position.add(this.velocity);
         // Gradually align velocity with the global flow
-        //Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
-       // velocity.add(flowCorrection);
+        Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
+        velocity.add(flowCorrection);
         this.angleVelocity += this.angleAcceleration;
         this.angle += this.angleVelocity;
 
@@ -119,7 +162,9 @@ public class Particle {
 
     public void draw(GraphicsContext gc) {
         gc.setFill(Color.BLUE);
-        gc.strokeOval(position.getX(), position.getY(), 0.05f, 0.05f); // (x,y,hoehe,breite) Einfach ein Punkt
+        //gc.fillOval(position.getX() - RADIUS, position.getY() - RADIUS, DURCHMESSER, DURCHMESSER); // (x,y,hoehe,breite) Einfach ein Punkt
+        gc.strokeLine(position.getX(), position.getY(), position.getX(), position.getY());
+       // gc.strokeLine(0, 0, position.getX(), position.getY() + RADIUS); // ZUM DEBUGGEN
     }
 
 }

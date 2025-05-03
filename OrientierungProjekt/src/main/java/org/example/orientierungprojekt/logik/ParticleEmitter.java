@@ -11,13 +11,13 @@ import java.util.ArrayList;
 public class ParticleEmitter {
 
     private final Vector originVector;
-    //private RepulsionHandler repulsionHandler;
+    private RepulsionHandler repulsionHandler;
 
     private List<Particle> particles;
     private List<Obstacle> obstacles;
 
-    private final int maxParticles = 1000;
-    private final int maxObstacles = 10;
+    private final int maxParticles = 100;
+    private final int maxObstacles = 1;
 
     private float particleSpeed = 5.0f;
 
@@ -32,7 +32,7 @@ public class ParticleEmitter {
         this.originVector = new Vector(0, 0);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
-     //   repulsionHandler = new RepulsionHandler();
+        this.repulsionHandler = new RepulsionHandler();
     }
 
     public void addParticle(float x, float y) {
@@ -65,31 +65,49 @@ public class ParticleEmitter {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         for(int i = 0; i < maxParticles; i++) {
-            addParticle(this.originVector.getX(), this.originVector.getY() + 3 * i); // Partikel werden in vertikaler Linie initialisieren
+            addParticle(this.originVector.getX(), this.originVector.getY() + i * 2.0f); // Partikel werden in vertikaler Linie initialisieren
         }
 
         for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
-            addObstacle( (float) Math.random() * 500 + i, (float) Math.random() * 500 + i );
+            addObstacle( (float) Math.random() * 500 + i, (float) Math.random() * 500 + i);
         }
     }
 
     // Update particles
     private void update() {
-        for (Particle particle : particles) {
-            if(particle.isDead()){
+        for (int i = 0; i < particles.size(); i++) {
+            Particle p1 = particles.get(i);
+    
+            // Check if the particle is dead and reset it
+            if (p1.isDead()) {
                 gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-                particle.resetToOrigin();
-                particle.setVelocity(1,0);
-                particle.setLifespan(1.0f);
-                particle.setDead(false);
+                p1.resetToOrigin();
+                p1.setVelocity(1, 0); // Reset velocity
+                p1.setLifespan(1.0f); // Reset lifespan
+                p1.setDead(false); // Mark as alive
             }
-            particle.updatePosition();
-            particle.updateLifespan(0.0016f);
+    
+            // Check for collisions with other particles
+            for (int j = i + 1; j < particles.size(); j++) {
+                Particle p2 = particles.get(j);
+                p1.particleBounce(p2); // Handle collision
+            }
+    
+            // Apply repulsion from obstacles
+            for (Obstacle obs : obstacles) {
+                repulsionHandler.applyRepulsion(p1, obs);
+            }
+    
+            // Update particle position and lifespan
+            p1.updatePosition();
+            p1.updateLifespan(0.0016f); // Assuming ~60 FPS, deltaTime = 1/60
         }
     }
 
     // Render particles and obstacles
     public void render(GraphicsContext gc) {
+
+        //gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
         for (Particle particle : particles) {
             particle.draw(gc);
@@ -114,9 +132,7 @@ public class ParticleEmitter {
                 render(gc);    // Render particles
             }
         };
-
         timer.start();
-
     }
 
     public void setParticleSpeed(float speed) {

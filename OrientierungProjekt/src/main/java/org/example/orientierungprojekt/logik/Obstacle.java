@@ -6,17 +6,20 @@ import javafx.scene.canvas.GraphicsContext;
 public class Obstacle {
 
     private Vector position;
+    private float durchmesser;
     private float radius;
-    private float repelForce;
 
     public Obstacle(float x, float y) {
-        this(x, y, 100.0f); // Default radius and repel force
+        this(x, y, 50.0f); // Default radius and repel force
     }
 
-    public Obstacle(float x, float y, float radius) {
-        this.radius = radius;
+    public Obstacle(float x, float y, float durchmesser) {
+        x -= radius;
+        y -= radius;
+        this.durchmesser = durchmesser;
+        this.radius = durchmesser / 2;
         this.position = new Vector(x, y); // Center the obstacle at the given position
-        }
+    }
 
     public void setPosition(Vector position) {
         this.position = position;
@@ -29,10 +32,6 @@ public class Obstacle {
 
     public void setRadius(float radius) {
         this.radius = radius;
-    }
-
-    public void setRepelForce(float repelForce) {
-        this.repelForce = repelForce;
     }
 
     public Vector getPosition() {
@@ -49,10 +48,6 @@ public class Obstacle {
 
     public float getRadius() {
         return radius;
-    }
-
-    public float getRepelForce(){
-        return repelForce;
     }
 
     public boolean maxRadius() {
@@ -76,11 +71,13 @@ public class Obstacle {
         Vector particlePos = particle.getPosition();
         float dx = position.getX() - particlePos.getX();
         float dy = position.getY() - particlePos.getY();
-        return (dx * dx + dy * dy) > (radius * radius);
+        return (dx * dx + dy * dy) < (radius * radius);
     }
 
     public void draw(GraphicsContext gc) {
         gc.setFill(javafx.scene.paint.Color.RED); // Set the color for the obstacle
-        gc.fillOval(position.getX() - radius / 32, position.getY() - radius / 16, radius / 8, radius / 8); // Center the circle at the obstacle's position
+        gc.strokeOval(position.getX() - radius, position.getY() - radius, durchmesser , durchmesser);
+        gc.strokeLine(this.position.getX(), this.position.getY(), this.position.getX() - radius, this.position.getY());
+        //gc.strokeLine(0, 0, this.position.getX(), this.position.getY()); //Absolute Koordinate zum DEBUGGEN
     }
 }

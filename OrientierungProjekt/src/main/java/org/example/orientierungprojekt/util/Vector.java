@@ -5,23 +5,32 @@ import java.lang.Math;
 public class Vector {
 
     /*
-     * Implementation mit Hilfe von: thenatureofcode.com und Mathebuch, irgendwas keinen Plan, muss ich mal raussuchen
+     * Implementation mit Hilfe von: thenatureofcode.com und Mathebuch, irgendwas mit Vektoren, es gibt ja so viele, muss ich mal raussuchen
      */
     
     private float x;
     private float y;
+
+    public Vector(){
+        new Vector(0,0);
+    }
 
     public Vector(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
+    public Vector(Vector other){
+        this.x = other.getX();
+        this.y = other.getY();
+    }
+
     public float getX() {
-        return x;
+        return this.x;
     }
 
     public float getY() {
-        return y;
+        return this.y;
     }
 
     public void setX(float x) {
@@ -63,8 +72,17 @@ public class Vector {
         this.y -= other.y;
     }
 
+    public void subtract(float x, float y){
+        this.x -= x;
+        this.y -= y;
+    }
+
     public Vector subtractVector(Vector other) {
         return new Vector(this.x - other.x, this.y - other.y);
+    }
+
+    public Vector subtractVector(float x, float y){
+        return new Vector(this.x - x, this.y - y);
     }
 
     public void scale(float scalar) {
@@ -76,13 +94,17 @@ public class Vector {
         return new Vector(this.x * scalar, this.y * scalar);
     }
 
-    public float magnitude(){
-        return (float)Math.sqrt(this.x * this.x + this.y * this.y);
+    public float getLength(){
+        return (float) Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    public float getLength(Vector vector){
+        return (float) Math.sqrt(vector.getX() * vector.getX() + vector.getY() * vector.getY());
     }
 
     public float distanceTo(Vector other) {
-        float dx = this.x - other.x;
-        float dy = this.y - other.y;
+        float dx = (this.x - other.x);
+        float dy = (this.y - other.y);
         return (float) Math.sqrt(dx * dx + dy * dy);
     }
 
@@ -101,7 +123,7 @@ public class Vector {
     }
 
     public void normalize() {
-        float mag = magnitude();
+        float mag = getLength();
         if (mag != 0) {
             this.x /= mag;
             this.y /= mag;
@@ -109,7 +131,7 @@ public class Vector {
     }
 
     public Vector getNormalizedVector() {
-        float mag = magnitude();
+        float mag = getLength();
         if (mag != 0) {
             return new Vector(this.x / mag, this.y / mag);
         } else {
@@ -121,17 +143,31 @@ public class Vector {
         return this.x * other.x + this.y * other.y;
     }
 
-    public void rotateVector(float angle) {
-        float newX = this.x * (float) Math.cos(angle) - this.y * (float) Math.sin(angle);
-        float newY = this.x * (float) Math.sin(angle) + this.y * (float) Math.cos(angle);
-        this.x = newX;
-        this.y = newY;
+    public void rotateByRadians(float angleInRadians){
+        float newX = this.x * (float) Math.cos(angleInRadians) - this.y * (float) Math.sin(angleInRadians);
+        float newY = this.x * (float) Math.sin(angleInRadians) + this.y * (float) Math.cos(angleInRadians);
+        
+        this.x = newX; this.y = newY;
+    }
+
+    public Vector rotateVector(float angleInRadians){
+        float newX = this.x * (float) Math.cos(angleInRadians) - this.getY() * (float) Math.sin(angleInRadians);
+        float newY = this.x * (float) Math.sin(angleInRadians) + this.getY() * (float) Math.cos(angleInRadians);
+
+        return new Vector(newX, newY);
+    }
+
+    public Vector rotateVector(Vector other, float angleInRadians) {
+        float newX = other.getX() * (float) Math.cos(angleInRadians) - other.getY() * (float) Math.sin(angleInRadians);
+        float newY = other.getX() * (float) Math.sin(angleInRadians) + other.getY() * (float) Math.cos(angleInRadians);
+
+        return new Vector(newX, newY);
     }
 
     public float getAngle(Vector v1, Vector v2) {
         float dotProduct = v1.dot(v2);
-        float magnitudeV1 = v1.magnitude();
-        float magnitudeV2 = v2.magnitude();
+        float magnitudeV1 = v1.getLength();
+        float magnitudeV2 = v2.getLength();
         return (float) Math.acos(dotProduct / (magnitudeV1 * magnitudeV2));
     }
     
