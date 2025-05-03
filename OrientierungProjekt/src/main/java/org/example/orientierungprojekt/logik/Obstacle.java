@@ -3,25 +3,26 @@ package org.example.orientierungprojekt.logik;
 import org.example.orientierungprojekt.util.Vector;
 import javafx.scene.canvas.GraphicsContext;
 
-public class Obstacle {
+public abstract class Obstacle {
 
-    private Vector position;
+    protected Vector position;
     private float durchmesser;
     private float radius;
+    private float size;
 
     public Obstacle(float x, float y) {
         this(x, y, 50.0f); // Default radius and repel force
     }
 
-    public Obstacle(float x, float y, float durchmesser) {
-        x -= radius;
-        y -= radius;
-        this.durchmesser = durchmesser;
-        this.radius = durchmesser / 2;
+    public Obstacle(float x, float y, float radius) {
+        //x -= radius;
+        //y -= radius;
+        //this.durchmesser = durchmesser;
+        this.radius = radius;
         this.position = new Vector(x, y); // Center the obstacle at the given position
     }
 
-    public void setPosition(Vector position) {
+    /*public void setPosition(Vector position) {
         this.position = position;
     }
 
@@ -32,7 +33,7 @@ public class Obstacle {
 
     public void setRadius(float radius) {
         this.radius = radius;
-    }
+    }*/
 
     public Vector getPosition() {
         return position;
@@ -50,7 +51,16 @@ public class Obstacle {
         return radius;
     }
 
-    public boolean maxRadius() {
+    public float getSize() {
+        return size;
+    }
+
+    public float getInfluenceRadius() {
+        return radius * 1.5f;
+    }
+
+
+    /*public boolean maxRadius() {
         System.out.println("Radius ist groß genug: " + radius);
         return radius >= 100.0f;
     }
@@ -72,12 +82,9 @@ public class Obstacle {
         float dx = position.getX() - particlePos.getX();
         float dy = position.getY() - particlePos.getY();
         return (dx * dx + dy * dy) < (radius * radius);
-    }
+    }*/
 
-    public void draw(GraphicsContext gc) {
-        gc.setFill(javafx.scene.paint.Color.RED); // Set the color for the obstacle
-        gc.strokeOval(position.getX() - radius, position.getY() - radius, durchmesser , durchmesser);
-        gc.strokeLine(this.position.getX(), this.position.getY(), this.position.getX() - radius, this.position.getY());
-        //gc.strokeLine(0, 0, this.position.getX(), this.position.getY()); //Absolute Koordinate zum DEBUGGEN
-    }
+    public abstract void draw(GraphicsContext gc);
+
+    public abstract void applyRepulsion(Particle particle);
 }

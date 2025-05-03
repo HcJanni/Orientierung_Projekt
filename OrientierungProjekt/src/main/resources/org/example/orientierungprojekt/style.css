@@ -12,66 +12,63 @@
     -fx-effect: dropshadow(gaussian, #ffffff33, 6, 0.3, 0, 0);
 }
 
-/* ChoiceBox allgemeiner Stil */
-.choice-box {
+/* ComboBox allgemeiner Stil */
+.combo-box {
     -fx-background-color: #415a77;
     -fx-background-radius: 5;
     -fx-border-radius: 5;
     -fx-border-width: 2;
+    -fx-border-color: #023047;
     -fx-text-fill: white;
 }
 
 /* Text im geschlossenen Zustand */
-.choice-box .label {
-    -fx-text-fill: #ffffff;
+.combo-box .text {
+    -fx-fill: #ffffff;
 }
 
 /* Pfeilbereich */
-.choice-box .arrow-button {
-    -fx-background-color: #ffffff;
+.combo-box .arrow-button {
+    -fx-background-color: #415a77;
 }
 
-.choice-box .arrow {
+.combo-box .arrow {
     -fx-background-color: #ffffff;
 }
 
 /* Pfeil-Hintergrund beim Hover */
-.choice-box:hover .arrow-button {
-    -fx-background-color: #2f5233;
+.combo-box:hover .arrow-button {
+    -fx-background-color: #2c3d52;
 }
 
-/* Dropdown-Menü (Context) */
-.choice-box .context-menu {
+/* Dropdown-Liste */
+.combo-box-popup .list-view {
     -fx-background-color: #415a77;
     -fx-border-color: #023047;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
-    -fx-text-fill: #ffffff;
 }
 
-/* Menüeinträge */
-.choice-box .menu-item {
+/* Einzelne Einträge */
+.combo-box .list-cell {
     -fx-background-color: transparent;
     -fx-text-fill: #ffffff;
     -fx-padding: 6 12 6 12;
 }
 
-/* Hover-Effekt für Menüeinträge */
-.choice-box .menu-item:hover {
+/* Hover-Effekt */
+.combo-box .list-cell:hover {
     -fx-background-color: #2c3d52;
 }
 
-/* Farbe des Häkchens */
-.choice-box .menu-item:checked .checkmark {
-    -fx-background-color: white !important;
+/* Ausgewählter Eintrag */
+.combo-box .list-cell:selected {
+    -fx-background-color: #415a77;
+    -fx-text-fill: white;
 }
 
-/* Haken bleibt auch beim Hover weiß */
-.choice-box .menu-item:checked:hover .checkmark {
-    -fx-background-color: white !important;
+/* Häkchen-Markierung (wenn verwendet) */
+.combo-box .list-cell:filled:selected:focused {
+    -fx-mark-color: white;
 }
 
-/* Absicherung: falls JavaFX auf mark-color zurückgreift */
-.choice-box .menu-item:checked {
-    -fx-mark-color: white !important;
-}

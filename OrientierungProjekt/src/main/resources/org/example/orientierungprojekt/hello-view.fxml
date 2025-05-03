@@ -14,6 +14,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ComboBox?>
 <BorderPane fx:id="rootPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.orientierungprojekt.HelloController">
 
     <!-- Seitenleiste links -->
@@ -56,15 +57,15 @@
         <HBox spacing="10.0" style="-fx-background-color: rgba(0,0,0,0.5);">
             <children>
                 <Label style="-fx-font-weight: bold;" text="Hindernisse:" textFill="WHITE" />
-                <ChoiceBox fx:id="obstacleChoice" prefWidth="150" value="Kreis">
+                <ComboBox fx:id="obstacleDropdown" prefWidth="150">
                     <items>
                         <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="Kreis" />
-                            <String fx:value="Viereck" />
-                            <String fx:value="Dreieck" />
+                            <String fx:value="Kreis"/>
+                            <String fx:value="Quadrat"/>
+                            <String fx:value="Dreieck"/>
                         </FXCollections>
                     </items>
-                </ChoiceBox>
+                </ComboBox>
 
                 <Label fx:id="particleLabel" text="Partikel: 500" textFill="WHITE" />
                 <Label fx:id="speedLabel" text="Geschw.: 5.0" textFill="WHITE" />

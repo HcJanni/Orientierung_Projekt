@@ -15,7 +15,9 @@ public class Particle {
     private Vector position;
     private Vector velocity; //Aenderungsrate der Position
     private Vector acceleration; //Aenderungsrate der Geschwindigkeit
-    
+
+    private final float initialY;
+
     private float angle;
     private float angleVelocity; //Aenderungsrate der Position mit Hilfe eines Winkels
     private float angleAcceleration; //Aenderungsrate der Geschwindigkeit mit Hilfe eines Winkels
@@ -37,6 +39,7 @@ public class Particle {
         this.angleAcceleration = 0.0f;
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
+        this.initialY = position.getY();
     }
 
     public Particle(float x, float y){
@@ -51,6 +54,11 @@ public class Particle {
         this.angleAcceleration = 0.0f;
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
+        this.initialY = position.getY();
+    }
+
+    public float getInitialY() {
+        return initialY;
     }
 
     public Vector getPosition() {
@@ -146,6 +154,11 @@ public class Particle {
     public void updatePosition() {
         //newPosition = currentPosition + velocity * deltaTime
         this.velocity.add(this.acceleration);
+        // Wenn Geschwindigkeit extrem klein ist, Boost geben
+        if (this.velocity.getLength() < 0.05f) {
+            Vector nudge = GLOBAL_FLOW.getNormalizedVector().scaleVector(0.3f);
+            this.velocity.add(nudge);
+        }
         this.position.add(this.velocity);
         // Gradually align velocity with the global flow
         Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
@@ -153,8 +166,9 @@ public class Particle {
         this.angleVelocity += this.angleAcceleration;
         this.angle += this.angleVelocity;
 
-        this.acceleration.scale(0.0f);
-     }
+        this.acceleration.scale(0.25f);
+
+    }
 
      public void updateDirection(float angleInRadians){
         

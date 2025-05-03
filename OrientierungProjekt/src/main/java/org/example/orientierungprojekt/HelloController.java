@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Slider;
 import javafx.scene.control.Label;
 
@@ -27,6 +28,9 @@ public class HelloController {
 
     @FXML
     private Label speedLabel, particleLabel, lifeLabel, directionLabel;
+
+    @FXML private ComboBox<String> obstacleDropdown;
+
 
     @FXML
     public void initialize() {
@@ -53,6 +57,9 @@ public class HelloController {
             double value = Math.round(newVal.doubleValue() * 10.0) / 10.0;
             directionLabel.setText("Windrichtung: " + value + "°");
         });
+
+        obstacleDropdown.setValue("Bitte auswählen"); // Default
+
     }
 
     /**
@@ -70,7 +77,7 @@ public class HelloController {
         uiControl = new UIControl(
                 particleEmitter,
                 speedSlider, particleSlider, lifeSlider, directionSlider,
-                resetButton
+                resetButton, obstacleDropdown
         );
     }
 

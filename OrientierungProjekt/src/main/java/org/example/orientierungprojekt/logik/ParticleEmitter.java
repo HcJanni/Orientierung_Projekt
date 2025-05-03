@@ -16,7 +16,7 @@ public class ParticleEmitter {
     private List<Particle> particles;
     private List<Obstacle> obstacles;
 
-    private final int maxParticles = 100;
+    private final int maxParticles = 500;
     private final int maxObstacles = 1;
 
     private float particleSpeed = 5.0f;
@@ -49,8 +49,27 @@ public class ParticleEmitter {
             obstacles.remove(0);
         } 
         
-        Obstacle obs = new Obstacle(x, y);
-        obstacles.add(obs);
+        CircleObstacle circle = new CircleObstacle(300, 300);
+        SquareObstacle square = new SquareObstacle(x, y+200, 50.0f);
+        TriangleObstacle triangle = new TriangleObstacle(x, y-200, 50.0f);
+        obstacles.add(circle);
+        obstacles.add(square);
+        obstacles.add(triangle);
+    }
+
+    public void setObstacleType(String type) {
+        obstacles.clear();
+        switch (type) {
+            case "Kreis":
+                obstacles.add(new CircleObstacle(300, 300));
+                break;
+            case "Quadrat":
+                obstacles.add(new SquareObstacle(300, 300, 50.0f));
+                break;
+            case "Dreieck":
+                obstacles.add(new TriangleObstacle(300, 300, 50.0f));
+                break;
+        }
     }
 
     public List<Particle> getParticles() {
@@ -68,9 +87,14 @@ public class ParticleEmitter {
             addParticle(this.originVector.getX(), this.originVector.getY() + i * 2.0f); // Partikel werden in vertikaler Linie initialisieren
         }
 
-        for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
-            addObstacle( (float) Math.random() * 500 + i, (float) Math.random() * 500 + i);
-        }
+        /*for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
+            addObstacle( 300 + i, 300 + i);
+        }*/
+    }
+
+    public void reset() {
+        // Reset alle Partikel zur Ursprungsposition und Zustand
+        initialize();
     }
 
     // Update particles
@@ -88,19 +112,20 @@ public class ParticleEmitter {
             }
     
             // Check for collisions with other particles
-            for (int j = i + 1; j < particles.size(); j++) {
+            /*for (int j = i + 1; j < particles.size(); j++) {
                 Particle p2 = particles.get(j);
                 p1.particleBounce(p2); // Handle collision
-            }
-    
+            }*/
+
             // Apply repulsion from obstacles
             for (Obstacle obs : obstacles) {
-                repulsionHandler.applyRepulsion(p1, obs);
+                //repulsionHandler.applyCircleRepulsion(p1, obs);
+                obs.applyRepulsion(p1);
             }
     
             // Update particle position and lifespan
             p1.updatePosition();
-            p1.updateLifespan(0.0016f); // Assuming ~60 FPS, deltaTime = 1/60
+            p1.updateLifespan(0.0008f); // Assuming ~60 FPS, deltaTime = 1/60
         }
     }
 
