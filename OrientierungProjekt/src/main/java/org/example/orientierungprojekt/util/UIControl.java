@@ -49,7 +49,7 @@ public class UIControl {
 
         obstacleDropdown.setOnAction(e -> {
             String selected = obstacleDropdown.getValue();
-            emitter.setObstacleType(selected);
+            //.setObstacleType(selected);
         });
 
         lifeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {

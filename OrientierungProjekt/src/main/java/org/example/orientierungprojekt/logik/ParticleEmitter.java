@@ -15,7 +15,7 @@ public class ParticleEmitter {
     private RepulsionHandler repulsionHandler;
 
     private List<Particle> particles;
-    private List<Obstacle> obstacles;
+    private final List<Obstacle> obstacles;
 
     private int maxParticles = 300;
     private final int maxObstacles = 1;
@@ -80,6 +80,40 @@ public class ParticleEmitter {
         }
     }
 
+    public void addObstacleAt(float x, float y, String type) {
+        switch (type) {
+            case "Kreis" -> obstacles.add(new CircleObstacle(x, y));
+            case "Quadrat" -> obstacles.add(new SquareObstacle(x, y, 50.0f));
+            case "Dreieck" -> obstacles.add(new TriangleObstacle(x, y, 50.0f));
+        }
+    }
+
+    public void removeNearestObstacle(float x, float y, float maxDistance) {
+        Vector clickPos = new Vector(x, y);
+        Obstacle toRemove = null;
+        float minDist = Float.MAX_VALUE;
+
+        for (Obstacle o : obstacles) {
+            float dist = o.getPosition().distanceTo(clickPos);
+            if (dist < minDist && dist <= maxDistance) {
+                minDist = dist;
+                toRemove = o;
+            }
+        }
+
+        if (toRemove != null) {
+            obstacles.remove(toRemove);
+        }
+
+        System.out.println("Clicked at: " + x + "," + y);
+        System.out.println("Checking against " + obstacles.size() + " obstacles.");
+
+        for (Obstacle o : obstacles) {
+            float dist = o.getPosition().distanceTo(clickPos);
+            System.out.println("Distance to obstacle: " + dist);
+        }
+    }
+
     public List<Particle> getParticles() {
         return particles;
     }
@@ -90,13 +124,14 @@ public class ParticleEmitter {
     
     private void initialize() {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        initializeParticles();  // Statt direkter Code
 
 
 
-        int half = maxParticles / 2;
+        /*int half = maxParticles / 2;
         float spacing = 2.0f;
 
-        /*float angleRad = (float) Math.toRadians(directionDegrees);
+        float angleRad = (float) Math.toRadians(directionDegrees);
         float dx = (float) Math.cos(angleRad);
         float dy = (float) Math.sin(angleRad);
 
@@ -104,13 +139,13 @@ public class ParticleEmitter {
             float offsetX = i * 2.0f * -dy;  // Orthogonal zur Flugrichtung verteilen
             float offsetY = i * 2.0f * dx;
             addParticle(originVector.getX() + offsetX, originVector.getY() + offsetY);
-        }*/
+        }
 
 
         for (int i = -half; i < half; i++) {
             addParticle(this.originVector.getX(), this.originVector.getY() + i * spacing);
         }
-        setParticleLifespan(lifespanSeconds); // ← neue Zeile
+        setParticleLifespan(lifespanSeconds); // ← neue Zeile*/
 
         /*for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
             addObstacle( 300 + i, 300 + i);
@@ -118,10 +153,20 @@ public class ParticleEmitter {
     }
 
     public void reset() {
-        // Reset alle Partikel zur Ursprungsposition und Zustand
+        pause(); // Animation stoppen
+        isRunning = false; // ← WICHTIG: internen Status zurücksetzen
+
+        particles.clear();
+        obstacles.clear();
+
+        if (gc != null) {
+            gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        }
+
         initialize();
-        setParticleLifespan(lifespanSeconds); // ← neu
+        setParticleLifespan(lifespanSeconds);
     }
+
 
     public void setClearBeforeRender(boolean value) {
         this.clearBeforeRender = value;
@@ -168,9 +213,9 @@ public class ParticleEmitter {
     // Render particles and obstacles
     public void render(GraphicsContext gc) {
 
-        if (!clearBeforeRender) {
+        /*if (!clearBeforeRender) {
             gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        }
+        }*/
 
         for (Particle particle : particles) {
             particle.draw(gc);
@@ -223,6 +268,24 @@ public class ParticleEmitter {
             isRunning = false;
         }
     }
+
+    public void resetParticlesOnly() {
+        particles.clear();
+        initializeParticles();  // Neue Hilfsmethode, siehe unten
+    }
+
+    private void initializeParticles() {
+        int half = maxParticles / 2;
+        float spacing = 2.0f;
+
+        for (int i = -half; i < half; i++) {
+            addParticle(originVector.getX(), originVector.getY() + i * spacing);
+        }
+
+        setParticleLifespan(lifespanSeconds);
+    }
+
+    public boolean isRunning() { return isRunning; }
 
     public void setParticleSpeed(float speed) {
         this.particleSpeed = speed;

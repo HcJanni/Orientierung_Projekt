@@ -54,7 +54,7 @@ public class HelloController {
 
             // Fläche & Partikel zurücksetzen
             if (particleEmitter != null) {
-                particleEmitter.reset();
+                resetAndUnlock();
             }
         });
 
@@ -70,7 +70,7 @@ public class HelloController {
         clearToggleBox.setOnAction(e -> {
             boolean clear = clearToggleBox.isSelected();
             particleEmitter.setClearBeforeRender(clear);
-            particleEmitter.reset(); // sofort zurücksetzen
+            resetAndUnlock(); // sofort zurücksetzen
         });
 
         startButton.setOnAction(e -> {
@@ -86,6 +86,38 @@ public class HelloController {
         });
 
         drawLegendGradient();
+
+        mainCanvas.setOnMousePressed(event -> {
+            if (particleEmitter == null || particleEmitter.isRunning()) {
+                return;
+            }
+
+            double x = event.getX();
+            double y = event.getY();
+
+            if (event.isPrimaryButtonDown()) {
+                particleEmitter.addObstacleAt((float) x, (float) y, obstacleDropdown.getValue());
+                particleEmitter.resetParticlesOnly(); // ⬅️ Partikel zurücksetzen
+            }
+
+            if (event.isSecondaryButtonDown()) {
+                particleEmitter.removeNearestObstacle((float) x, (float) y, 30.0f);
+                particleEmitter.resetParticlesOnly(); // ⬅️ ebenfalls zurücksetzen
+            }
+
+            GraphicsContext gc = mainCanvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, mainCanvas.getWidth(), mainCanvas.getHeight());
+            particleEmitter.render(gc);
+        });
+
+        resetButton.setOnAction(e -> resetAndUnlock());
+
+
+
+
+
+
+
     }
 
     /**
@@ -116,6 +148,12 @@ public class HelloController {
             gc.setFill(color);
             gc.fillRect(x, 0, 1, legendCanvas.getHeight());
         }
+    }
+
+    private void resetAndUnlock() {
+        particleEmitter.reset();
+        startButton.setDisable(false);
+        pauseButton.setDisable(true);
     }
 
 }
