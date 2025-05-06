@@ -56,6 +56,14 @@ public class Vector {
         this.y += y;
     }
 
+    public void addToY(float dy) {
+        this.y += dy;
+    }
+
+    public void addToX(float dx) {
+        this.x += dx;
+    }
+
     public void addAngleVelocity(float angle){
         float newX = (float) (this.x * Math.cos(angle) - this.y * Math.sin(angle));
         float newY = (float) (this.x * Math.sin(angle) + this.y * Math.cos(angle));

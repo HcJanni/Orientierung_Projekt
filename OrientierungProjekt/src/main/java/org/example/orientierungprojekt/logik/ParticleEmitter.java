@@ -1,5 +1,6 @@
 package org.example.orientierungprojekt.logik;
 
+import javafx.scene.paint.Color;
 import org.example.orientierungprojekt.util.Vector;
 
 import javafx.animation.AnimationTimer;
@@ -16,10 +17,17 @@ public class ParticleEmitter {
     private List<Particle> particles;
     private List<Obstacle> obstacles;
 
-    private final int maxParticles = 500;
+    private int maxParticles = 300;
     private final int maxObstacles = 1;
 
     private float particleSpeed = 5.0f;
+
+    private boolean clearBeforeRender = true; // Standard: löschen aktiv
+
+    private AnimationTimer timer;
+    private boolean isRunning = false;
+
+    private float lifespanSeconds = 14.0f; // Standardlebensdauer
 
     //private int lastSpawnTime = 0;
     //private int spawnInterval = 20_000_000; // alle 20ms ≈ 50 Partikel pro Sekunde
@@ -29,7 +37,7 @@ public class ParticleEmitter {
     private GraphicsContext gc;
 
     public ParticleEmitter() {
-        this.originVector = new Vector(0, 0);
+        this.originVector = new Vector(0, 300);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
         this.repulsionHandler = new RepulsionHandler();
@@ -83,9 +91,26 @@ public class ParticleEmitter {
     private void initialize() {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 
-        for(int i = 0; i < maxParticles; i++) {
-            addParticle(this.originVector.getX(), this.originVector.getY() + i * 2.0f); // Partikel werden in vertikaler Linie initialisieren
+
+
+        int half = maxParticles / 2;
+        float spacing = 2.0f;
+
+        /*float angleRad = (float) Math.toRadians(directionDegrees);
+        float dx = (float) Math.cos(angleRad);
+        float dy = (float) Math.sin(angleRad);
+
+        for (int i = -half; i < half; i++) {
+            float offsetX = i * 2.0f * -dy;  // Orthogonal zur Flugrichtung verteilen
+            float offsetY = i * 2.0f * dx;
+            addParticle(originVector.getX() + offsetX, originVector.getY() + offsetY);
+        }*/
+
+
+        for (int i = -half; i < half; i++) {
+            addParticle(this.originVector.getX(), this.originVector.getY() + i * spacing);
         }
+        setParticleLifespan(lifespanSeconds); // ← neue Zeile
 
         /*for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
             addObstacle( 300 + i, 300 + i);
@@ -95,6 +120,12 @@ public class ParticleEmitter {
     public void reset() {
         // Reset alle Partikel zur Ursprungsposition und Zustand
         initialize();
+        setParticleLifespan(lifespanSeconds); // ← neu
+    }
+
+    public void setClearBeforeRender(boolean value) {
+        this.clearBeforeRender = value;
+        System.out.println("Strömung anzeigen: " + value);
     }
 
     // Update particles
@@ -106,8 +137,13 @@ public class ParticleEmitter {
             if (p1.isDead()) {
                 gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
                 p1.resetToOrigin();
-                p1.setVelocity(1, 0); // Reset velocity
-                p1.setLifespan(1.0f); // Reset lifespan
+                double radians = Math.toRadians(directionDegrees);
+                float dx = (float) Math.cos(radians);
+                float dy = (float) Math.sin(radians);
+                p1.setVelocity(dx * particleSpeed, dy * particleSpeed);
+                /*p1.resetToOrigin();
+                p1.setVelocity(1, 0); // Reset velocity*/
+                p1.setLifespan(lifespanSeconds); // Reset lifespan
                 p1.setDead(false); // Mark as alive
             }
     
@@ -125,14 +161,16 @@ public class ParticleEmitter {
     
             // Update particle position and lifespan
             p1.updatePosition();
-            p1.updateLifespan(0.0008f); // Assuming ~60 FPS, deltaTime = 1/60
+            p1.updateLifespan(1.0f / 60.0f); // Assuming ~60 FPS, deltaTime = 1/60
         }
     }
 
     // Render particles and obstacles
     public void render(GraphicsContext gc) {
 
-        //gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        if (!clearBeforeRender) {
+            gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+        }
 
         for (Particle particle : particles) {
             particle.draw(gc);
@@ -141,7 +179,11 @@ public class ParticleEmitter {
         for(Obstacle obstacle : obstacles){
             obstacle.draw(gc);
         }
-        
+    }
+
+    public void toggleClear() {
+        clearBeforeRender = !clearBeforeRender;
+        System.out.println("Clear-Modus: " + (clearBeforeRender ? "AN" : "AUS"));
     }
 
     public void start(GraphicsContext gc) {
@@ -150,18 +192,68 @@ public class ParticleEmitter {
 
         initialize(); // initialize particles and obstacles
 
-        AnimationTimer timer = new AnimationTimer() {
+        timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                update(); // Update particles
+                render(gc); // Render particles
+            }
+        };
+
+        /*AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 update(); // Update particles
                 render(gc);    // Render particles
             }
         };
-        timer.start();
+        timer.start();*/
+    }
+
+    public void resume() {
+        if (!isRunning && timer != null) {
+            timer.start();
+            isRunning = true;
+        }
+    }
+
+    public void pause() {
+        if (isRunning && timer != null) {
+            timer.stop();
+            isRunning = false;
+        }
     }
 
     public void setParticleSpeed(float speed) {
         this.particleSpeed = speed;
+
+        // Wende neue Geschwindigkeit auf alle Partikel an
+        for (Particle p : particles) {
+            Vector dir = p.getVelocity().getNormalizedVector();
+            p.setVelocity(dir.scaleVector(speed));
+        }
+    }
+
+    public void setParticleLifespan(float seconds) {
+        this.lifespanSeconds = seconds;
+        for (Particle p : particles) {
+            if (!p.isDead()) {
+                p.setLifespan(seconds);
+            }
+        }
+    }
+
+    public void setWindDirection(float degrees) {
+        this.directionDegrees = degrees;
+    }
+
+    public void setMaxParticles(int count) {
+        this.maxParticles = count;
+
+        // Partikelliste ggf. anpassen:
+        if (particles.size() > maxParticles) {
+            particles = particles.subList(0, maxParticles);
+        }
     }
 
     public void setParticleDirection(float degrees) {

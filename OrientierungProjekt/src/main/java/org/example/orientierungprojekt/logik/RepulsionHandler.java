@@ -80,7 +80,8 @@ public class RepulsionHandler {
 
     }
 
-    public static void applySquareRepulsion(Particle particle, SquareObstacle obstacle) {
+    // ALT
+    /*public static void applySquareRepulsion(Particle particle, SquareObstacle obstacle) {
         Vector pos = particle.getPosition();
         Vector oPos = obstacle.getPosition();
         float halfSize = obstacle.getRadius();
@@ -90,7 +91,32 @@ public class RepulsionHandler {
             Vector away = pos.subtractVector(oPos).getNormalizedVector();
             particle.applyForce(away.scaleVector(15.0f));
         }
+    }*/
+
+    public static void applySquareRepulsion(Particle particle, SquareObstacle obstacle) {
+        Vector pos = particle.getPosition();
+        Vector oPos = obstacle.getPosition();
+        float halfSize = obstacle.getRadius();
+
+        float dx = pos.getX() - oPos.getX();
+        float dy = pos.getY() - oPos.getY();
+
+        // Check if inside square
+        if (Math.abs(dx) < halfSize && Math.abs(dy) < halfSize) {
+
+            // Bestimme naheste Seite: horizontal oder vertikal
+            if (Math.abs(dx) > Math.abs(dy)) {
+                // Links oder rechts → vertikale Wand → Kraft horizontal
+                float pushX = dx > 0 ? 1 : -1;
+                particle.applyForce(new Vector(pushX * 15.0f, 0));
+            } else {
+                // Oben oder unten → horizontale Wand → Kraft vertikal
+                float pushY = dy > 0 ? 1 : -1;
+                particle.applyForce(new Vector(0, pushY * 15.0f));
+            }
+        }
     }
+
 
     public static void applyTriangleRepulsion(Particle particle, TriangleObstacle obstacle) {
         float r = obstacle.getRadius();

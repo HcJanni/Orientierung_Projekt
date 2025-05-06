@@ -4,6 +4,7 @@ import org.example.orientierungprojekt.util.Vector;
 import static org.example.orientierungprojekt.util.SimulationConfig.GLOBAL_FLOW;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import org.example.orientierungprojekt.util.SimulationConfig;
 
 public class Particle {
 
@@ -28,6 +29,8 @@ public class Particle {
 
     private boolean isDead;
     private float lifespan;
+
+    private float radius = 1.5f; // Standardgröße
 
     public Particle(){
         this.originPosition = new Vector(0.5f, 0.5f);
@@ -101,9 +104,9 @@ public class Particle {
     }
         
     public void updateLifespan(float deltaTime) {
-        lifespan -= deltaTime;
+        this.lifespan -= deltaTime;
         if (lifespan <= 0) {
-            isDead = true;
+            this.isDead = true;
         }
     }
 
@@ -175,9 +178,29 @@ public class Particle {
      }
 
     public void draw(GraphicsContext gc) {
-        gc.setFill(Color.BLUE);
+        /*float maxSpeed = SimulationConfig.getSpeed(); // oder fester Wert z. B. 5.0f
+        float actualSpeed = velocity.getLength();
+        double intensity = Math.min(actualSpeed / maxSpeed, 1.0);
+
+        // Geschwindigkeit in eine Farbe umwandeln (z. B. Blau = schnell, Rot = langsam)
+        Color c = Color.color(1.0 - intensity, 0.0, intensity); // Rot → Blau
+
+        gc.setFill(c);
+        gc.fillOval(position.getX(), position.getY(), radius, radius);*/
+
+        float speed = velocity.getLength();  // tatsächliche Geschwindigkeit des Partikels
+        float maxSpeed = 3.0f;              // ggf. anpassen
+
+        float intensity = Math.min(speed / maxSpeed, 1.0f); // Skaliert auf 0–1
+        Color color = new Color(intensity, 0, 1.0f - intensity, 1.0); // von Blau (langsam) zu Rot (schnell)
+
+        gc.setFill(color);
+        gc.fillOval(position.getX(), position.getY(), radius, radius);
+
+
+        //gc.setFill(Color.BLUE);
         //gc.fillOval(position.getX() - RADIUS, position.getY() - RADIUS, DURCHMESSER, DURCHMESSER); // (x,y,hoehe,breite) Einfach ein Punkt
-        gc.strokeLine(position.getX(), position.getY(), position.getX(), position.getY());
+        //gc.strokeLine(position.getX(), position.getY(), position.getX(), position.getY());
        // gc.strokeLine(0, 0, position.getX(), position.getY() + RADIUS); // ZUM DEBUGGEN
     }
 

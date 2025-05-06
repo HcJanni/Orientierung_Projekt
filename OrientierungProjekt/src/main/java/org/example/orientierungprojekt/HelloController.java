@@ -3,11 +3,11 @@ package org.example.orientierungprojekt;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import org.example.orientierungprojekt.logik.ParticleEmitter;
 import org.example.orientierungprojekt.util.UIControl;
 
@@ -19,6 +19,9 @@ public class HelloController {
     @FXML
     private Button resetButton;
 
+    @FXML private Button startButton;
+    @FXML private Button pauseButton;
+
 
     private ParticleEmitter particleEmitter;
     private UIControl uiControl;
@@ -27,10 +30,14 @@ public class HelloController {
     private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
 
     @FXML
-    private Label speedLabel, particleLabel, lifeLabel, directionLabel;
+    private Label speedLabel, particleLabel, lifeLabel;
 
     @FXML private ComboBox<String> obstacleDropdown;
 
+    @FXML private CheckBox clearToggleBox;
+
+    @FXML
+    private Canvas legendCanvas;
 
     @FXML
     public void initialize() {
@@ -44,6 +51,11 @@ public class HelloController {
         particleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             int value = newVal.intValue();
             particleLabel.setText("Partikel: " + value);
+
+            // Fläche & Partikel zurücksetzen
+            if (particleEmitter != null) {
+                particleEmitter.reset();
+            }
         });
 
         // Lebensdauer
@@ -52,14 +64,28 @@ public class HelloController {
             lifeLabel.setText("Lebensdauer: " + value);
         });
 
-        // Richtung
-        directionSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            double value = Math.round(newVal.doubleValue() * 10.0) / 10.0;
-            directionLabel.setText("Windrichtung: " + value + "°");
-        });
-
         obstacleDropdown.setValue("Bitte auswählen"); // Default
 
+        clearToggleBox.setSelected(true); // Standardwert: an
+        clearToggleBox.setOnAction(e -> {
+            boolean clear = clearToggleBox.isSelected();
+            particleEmitter.setClearBeforeRender(clear);
+            particleEmitter.reset(); // sofort zurücksetzen
+        });
+
+        startButton.setOnAction(e -> {
+            particleEmitter.resume();
+            startButton.setDisable(true);
+            pauseButton.setDisable(false);
+        });
+
+        pauseButton.setOnAction(e -> {
+            particleEmitter.pause();
+            startButton.setDisable(false);
+            pauseButton.setDisable(true);
+        });
+
+        drawLegendGradient();
     }
 
     /**
@@ -67,8 +93,9 @@ public class HelloController {
      */
     public void startSimulation() {
         GraphicsContext gc = mainCanvas.getGraphicsContext2D();
+        // NICHT sofort starten!
         particleEmitter = new ParticleEmitter();
-        particleEmitter.start(gc);
+        particleEmitter.start(gc); // ⬅️ Das initialisiert nur – Animation startet erst mit resume()
 
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             System.out.println("Neue Geschwindigkeit im Slider: " + newVal.floatValue());
@@ -79,6 +106,16 @@ public class HelloController {
                 speedSlider, particleSlider, lifeSlider, directionSlider,
                 resetButton, obstacleDropdown
         );
+    }
+
+    private void drawLegendGradient() {
+        GraphicsContext gc = legendCanvas.getGraphicsContext2D();
+        for (int x = 0; x < legendCanvas.getWidth(); x++) {
+            double t = x / legendCanvas.getWidth();
+            Color color = new Color(t, 0, 1 - t, 1.0);
+            gc.setFill(color);
+            gc.fillRect(x, 0, 1, legendCanvas.getHeight());
+        }
     }
 
 }

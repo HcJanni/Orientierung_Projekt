@@ -1,7 +1,6 @@
 package org.example.orientierungprojekt.util;
 
 import javafx.scene.control.*;
-import javafx.scene.canvas.GraphicsContext;
 
 import org.example.orientierungprojekt.logik.ParticleEmitter;
 
@@ -42,12 +41,10 @@ public class UIControl {
             currentSpeed = newVal.floatValue();
             System.out.println("Neue Geschwindigkeit: " + currentSpeed);
             emitter.setParticleSpeed(currentSpeed);
-        });
 
-        directionSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            currentDirection = newVal.floatValue();
-            System.out.println("Neue Windrichtung: " + currentDirection + "°");
-            emitter.setParticleDirection(currentDirection);
+            // GLOBAL_FLOW anpassen
+            SimulationConfig.GLOBAL_FLOW.setX(currentSpeed);
+            SimulationConfig.GLOBAL_FLOW.setY(0);
         });
 
         obstacleDropdown.setOnAction(e -> {
@@ -55,8 +52,21 @@ public class UIControl {
             emitter.setObstacleType(selected);
         });
 
+        lifeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            float seconds = newVal.floatValue();
+            emitter.setParticleLifespan(seconds);
+        });
 
+        particleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            int newCount = newVal.intValue();
+            emitter.setMaxParticles(newCount);
+        });
 
+        directionSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            float angle = newVal.floatValue(); // in Grad
+            emitter.setWindDirection(angle);
+            emitter.reset(); // ← Partikel neu erzeugen mit neuer Richtung
+        });
 
 
         // TODO: Weitere Slider-Events folgen später hier
