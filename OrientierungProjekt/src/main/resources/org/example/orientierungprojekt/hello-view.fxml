@@ -16,6 +16,7 @@
 
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Tooltip?>
 <BorderPane fx:id="rootPane" prefHeight="600.0" prefWidth="800.0" stylesheets="@style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.orientierungprojekt.HelloController">
 
     <!-- Seitenleiste links -->
@@ -29,21 +30,22 @@
                   <Button fx:id="pauseButton" prefWidth="75.0" text="Pause" />
                     </children>
                 </HBox>
-            <Button fx:id="resetButton" prefWidth="162.0" text="Reset" />
+            <Button fx:id="resetButton" prefWidth="165.0" text="Reset" />
 
-                <Label text="Anzahl Partikel" textFill="WHITE" />
-                <Slider fx:id="particleSlider" max="600" min="1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="300" />
+                <Label fx:id="particleLabel" layoutX="322.0" layoutY="10.0" text="Anzahl der Partikel: 600.0" textFill="WHITE" />
+                <Slider fx:id="particleSlider" max="600" min="1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="600" />
 
+                <Label fx:id="speedLabel" layoutX="322.0" layoutY="10.0" text="Geschwindigkeit: 1.0" textFill="WHITE" />
+                <Slider fx:id="speedSlider" layoutX="20.0" layoutY="121.0" max="2" min="0.1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="1" />
 
-                <Label text="Geschwindigkeit" textFill="WHITE" />
-            <Slider fx:id="speedSlider" layoutX="20.0" layoutY="121.0" max="2" min="0.1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="1" />
+                <Label fx:id="lifeLabel" layoutX="322.0" layoutY="10.0" text="Lebensdauer in Sekunden: 14.0" textFill="WHITE" />
+                <Slider fx:id="lifeSlider" layoutX="20.0" layoutY="325.0" max="28" min="1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="14" />
 
+                <Label fx:id="directionLabel" layoutX="322.0" layoutY="10.0" text="Windrichtung: 25°" textFill="WHITE" />
+                <Slider fx:id="directionSlider" layoutX="20.0" layoutY="349.0" max="50" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="25" />
 
-                <Label text="Lebensdauer" textFill="WHITE" />
-            <Slider fx:id="lifeSlider" layoutX="20.0" layoutY="325.0" max="28" min="1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="14" />
-            <Label layoutX="20.0" layoutY="192.0" text="Windrichtung" textFill="WHITE" />
-            <Slider fx:id="directionSlider" layoutX="20.0" layoutY="349.0" max="50" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="25" />
-
+                <Label fx:id="obstacleLabel" layoutX="322.0" layoutY="10.0" text="Hindernisgröße: 50" textFill="WHITE" />
+                <Slider fx:id="obstacleSizeSlider" layoutX="20.0" layoutY="349.0" max="100" min="10" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="50" />
 
                 <CheckBox fx:id="clearToggleBox" text="Strömung anzeigen" textFill="WHITE" />
             </children>
@@ -64,14 +66,10 @@
                             <String fx:value="Kreis"/>
                             <String fx:value="Quadrat"/>
                             <String fx:value="Dreieck"/>
+                            <String fx:value="Flügelprofil"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
-
-                <Label fx:id="particleLabel" text="Partikel: 300" textFill="WHITE" />
-                <Label fx:id="speedLabel" text="Geschw.: 1.0" textFill="WHITE" />
-            <Label fx:id="lifeLabel" layoutX="322.0" layoutY="20.0" text="Lebensdauer.: 14.0" textFill="WHITE" />
-            <Label fx:id="directionLabel" layoutX="322.0" layoutY="20.0" text="Windrichtung: 25°" textFill="WHITE" />
                 <VBox spacing="2.0">
                     <children>
                         <Canvas fx:id="legendCanvas" width="120" height="12" />
@@ -86,6 +84,12 @@
 
 
             </children>
+            <Button fx:id="helpButton" text="?" prefWidth="30">
+                <tooltip>
+                    <Tooltip text="Anleitung anzeigen" />
+                </tooltip>
+            </Button>
+
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
             </padding>

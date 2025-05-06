@@ -80,11 +80,12 @@ public class ParticleEmitter {
         }
     }
 
-    public void addObstacleAt(float x, float y, String type) {
+    public void addObstacleAt(float x, float y, String type, float size) {
         switch (type) {
-            case "Kreis" -> obstacles.add(new CircleObstacle(x, y));
-            case "Quadrat" -> obstacles.add(new SquareObstacle(x, y, 50.0f));
-            case "Dreieck" -> obstacles.add(new TriangleObstacle(x, y, 50.0f));
+            case "Kreis" -> obstacles.add(new CircleObstacle(x, y, size));
+            case "Quadrat" -> obstacles.add(new SquareObstacle(x, y, size));
+            case "Dreieck" -> obstacles.add(new TriangleObstacle(x, y, size));
+            case "Flügelprofil" -> obstacles.add(new AirfoilObstacle(x, y, size));
         }
     }
 

@@ -6,39 +6,50 @@
     -fx-text-fill: #ffffff;
 }
 
+.button:hover {
+    -fx-background-color: #2c3d52;
+    -fx-cursor: hand;
+}
+
 /* Effekt beim Drücken */
 .button:pressed {
     -fx-background-color: #1b263b;
     -fx-effect: dropshadow(gaussian, #ffffff33, 6, 0.3, 0, 0);
 }
 
-/* ComboBox allgemeiner Stil */
+/* ComboBox: äußere Hülle */
 .combo-box {
     -fx-background-color: #415a77;
     -fx-background-radius: 5;
     -fx-border-radius: 5;
-    -fx-border-width: 2;
-    -fx-border-color: #023047;
     -fx-text-fill: white;
+    -fx-cursor: hand;
 }
 
-/* Text im geschlossenen Zustand */
+/* Textbereich links – links runden */
 .combo-box .text {
-    -fx-fill: #ffffff;
+    -fx-fill: white;
+    -fx-background-radius: 5 0 0 5;
 }
 
-/* Pfeilbereich */
+/* Pfeilbereich rechts – rechts runden */
 .combo-box .arrow-button {
     -fx-background-color: #415a77;
+    -fx-background-radius: 0 5 5 0;
+    -fx-border-radius: 0 5 5 0;
+    -fx-padding: 0 8 0 8; /* Optional: etwas Luft für das Icon */
 }
 
 .combo-box .arrow {
     -fx-background-color: #ffffff;
+    -fx-background-radius: 0 5 5 0;
+        -fx-border-radius: 0 5 5 0;
 }
 
 /* Pfeil-Hintergrund beim Hover */
 .combo-box:hover .arrow-button {
     -fx-background-color: #2c3d52;
+    -fx-cursor: hand;
 }
 
 /* Dropdown-Liste */
@@ -47,6 +58,12 @@
     -fx-border-color: #023047;
     -fx-border-radius: 5;
     -fx-background-radius: 5;
+}
+
+/* Abrundung des äußeren Rahmens */
+.combo-box-base {
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
 }
 
 /* Einzelne Einträge */
@@ -59,12 +76,13 @@
 /* Hover-Effekt */
 .combo-box .list-cell:hover {
     -fx-background-color: #2c3d52;
+    -fx-cursor: hand;
 }
 
 /* Ausgewählter Eintrag */
 .combo-box .list-cell:selected {
-    -fx-background-color: #415a77;
     -fx-text-fill: white;
+    -fx-cursor: hand;
 }
 
 /* Häkchen-Markierung (wenn verwendet) */
@@ -72,3 +90,29 @@
     -fx-mark-color: white;
 }
 
+/* Allgemeiner Stil für CheckBox */
+.check-box {
+    -fx-text-fill: white;
+}
+
+/* Hover-Effekt */
+.check-box:hover {
+    -fx-cursor: hand;
+}
+
+/* Allgemeiner Stil für Slider */
+.slider {
+    -fx-control-inner-background: #415a77;
+}
+
+/* Hover-Effekt für den Slider-Track */
+.slider:hover {
+    -fx-cursor: hand;
+}
+
+/* Thumb (Schieberegler-Knopf) beim Hover */
+.slider .thumb:hover {
+    -fx-background-color: #ffffff;
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}

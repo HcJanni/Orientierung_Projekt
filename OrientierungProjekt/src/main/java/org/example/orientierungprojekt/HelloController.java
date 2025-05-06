@@ -10,6 +10,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import org.example.orientierungprojekt.logik.ParticleEmitter;
 import org.example.orientierungprojekt.util.UIControl;
+import javafx.util.Duration;
 
 public class HelloController {
 
@@ -30,7 +31,7 @@ public class HelloController {
     private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
 
     @FXML
-    private Label speedLabel, particleLabel, lifeLabel;
+    private Label speedLabel, particleLabel, lifeLabel, obstacleLabel;
 
     @FXML private ComboBox<String> obstacleDropdown;
 
@@ -39,18 +40,22 @@ public class HelloController {
     @FXML
     private Canvas legendCanvas;
 
+    @FXML private Button helpButton;
+
+    @FXML private Slider obstacleSizeSlider;
+
     @FXML
     public void initialize() {
         // Geschw.
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double value = Math.round(newVal.doubleValue() * 10.0) / 10.0;
-            speedLabel.setText("Geschw.: " + value);
+            speedLabel.setText("Geschwindigkeit: " + value);
         });
 
         // Partikel (ganzzahlig)
         particleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             int value = newVal.intValue();
-            particleLabel.setText("Partikel: " + value);
+            particleLabel.setText("Anzahl der Partikel: " + value);
 
             // Fläche & Partikel zurücksetzen
             if (particleEmitter != null) {
@@ -61,7 +66,13 @@ public class HelloController {
         // Lebensdauer
         lifeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double value = Math.round(newVal.doubleValue() * 10.0) / 10.0;
-            lifeLabel.setText("Lebensdauer: " + value);
+            lifeLabel.setText("Lebensdauer in Sekunden: " + value);
+        });
+
+        // Geschw.
+        obstacleSizeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            double value = Math.round(newVal.doubleValue() * 10.0) / 10.0;
+            obstacleLabel.setText("Hindernisgröße: " + value);
         });
 
         obstacleDropdown.setValue("Bitte auswählen"); // Default
@@ -96,8 +107,9 @@ public class HelloController {
             double y = event.getY();
 
             if (event.isPrimaryButtonDown()) {
-                particleEmitter.addObstacleAt((float) x, (float) y, obstacleDropdown.getValue());
-                particleEmitter.resetParticlesOnly(); // ⬅️ Partikel zurücksetzen
+                float size = (float) obstacleSizeSlider.getValue();
+                particleEmitter.addObstacleAt((float) x, (float) y, obstacleDropdown.getValue(), size);
+                particleEmitter.resetParticlesOnly();
             }
 
             if (event.isSecondaryButtonDown()) {
@@ -112,12 +124,35 @@ public class HelloController {
 
         resetButton.setOnAction(e -> resetAndUnlock());
 
+        Tooltip tooltip = new Tooltip("Zeigt die Anleitung");
+        tooltip.setShowDelay(Duration.millis(5));  // 0,5 Sekunden warten
+        tooltip.setHideDelay(Duration.millis(200));  // optional: 0,2s bis es verschwindet
+        tooltip.setShowDuration(Duration.seconds(10)); // optional: max. Anzeigedauer
 
+        Tooltip.install(helpButton, tooltip);
 
+        helpButton.setOnAction(e -> {
+            Alert info = new Alert(Alert.AlertType.INFORMATION);
+            info.setTitle("Kurzanleitung");
+            info.setHeaderText("Willkommen zur Windstrom-Simulation");
+            info.setContentText("""
+Bedienung:
+• Dropdown Menü → Hindernis auswählen
+• Hindernisgröße Slider → vor dem Platzieren ändern
+• Linksklick → Hindernis setzen
+• Rechtsklick → Hindernis entfernen
+• Start → Simulation starten
+• Pause → Simulation pausieren
+• Reset → alles zurücksetzen
+• Strömung anzeigen → visuelle Darstellung aktivieren
+• Farbverlauf: Blau (langsam) bis Rot (schnell)
+    """);
+            info.showAndWait();
+        });
 
-
-
-
+        obstacleSizeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Neue Hindernisgröße: " + newVal.floatValue());
+        });
     }
 
     /**

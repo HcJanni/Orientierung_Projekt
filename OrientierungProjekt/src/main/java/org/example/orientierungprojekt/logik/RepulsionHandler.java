@@ -1,5 +1,6 @@
 package org.example.orientierungprojekt.logik;
 
+import org.example.orientierungprojekt.util.SimulationConfig;
 import org.example.orientierungprojekt.util.Vector;
 import static org.example.orientierungprojekt.util.SimulationConfig.*;
 
@@ -146,4 +147,46 @@ public class RepulsionHandler {
 
         return alpha >= 0 && beta >= 0 && gamma >= 0;
     }
+
+    public static void applyAirfoilRepulsion(Particle particle, AirfoilObstacle obstacle) {
+        Vector pos = particle.getPosition();
+        float width = obstacle.getWidth();
+        float height = obstacle.getHeight();
+        Vector center = obstacle.getPosition();
+
+        // Relative Position des Partikels im lokalen Flügelkoordinatensystem (0..1)
+        float relX = (pos.getX() - center.getX()) / width;
+        float relY = (pos.getY() - center.getY()) / height;
+
+        if (relX >= 0 && relX <= 1) {
+            // NACA 4-stellige Symmetrieformel (nur für y-Thickness)
+            double yt = 5 * 0.12 * (
+                    0.2969 * Math.sqrt(relX) -
+                            0.1260 * relX -
+                            0.3516 * Math.pow(relX, 2) +
+                            0.2843 * Math.pow(relX, 3) -
+                            0.1015 * Math.pow(relX, 4)
+            );
+
+            // Bereich oberhalb/unterhalb des Profils erweitern
+            double influenceZone = yt * 1.3;
+
+            if (Math.abs(relY) < influenceZone) {
+                // Basisrichtung: globaler Windfluss
+                Vector flowDir = SimulationConfig.GLOBAL_FLOW.getNormalizedVector();
+
+                // Vertikale Ablenkung: positiver Wert oberhalb, negativer darunter
+                float verticalInfluence = (float) ((relY < 0 ? 1 : -1) * (influenceZone - Math.abs(relY)) / influenceZone);
+
+                // Leichte seitliche Kurvenbewegung erzeugen
+                Vector deflection = new Vector(0, verticalInfluence * 0.8f); // z.B. nach oben ableiten
+
+                // Resultierende Kraft berechnen (leicht gebogene Bahn)
+                Vector finalForce = flowDir.addVector(deflection).getNormalizedVector().scaleVector(20.0f);
+
+                particle.applyForce(finalForce);
+            }
+        }
+    }
+
 }
