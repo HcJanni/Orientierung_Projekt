@@ -131,8 +131,13 @@ public class RepulsionHandler {
 
         if (isInsideTriangle(p, a, b, c)) {
             Vector away = p.subtractVector(obstacle.getPosition()).getNormalizedVector();
-            particle.applyForce(away.scaleVector(20.0f));
+            particle.applyForce(away.scaleVector(1.0f));
         }
+
+        float yDeviation = p.getY() - particle.getInitialY();
+        float strength = 0.0001f * Math.abs(yDeviation);
+        Vector verticalCorrection = new Vector(0, -yDeviation * strength); // sanfte Rückführung
+        particle.applyForce(verticalCorrection);
     }
 
     private static boolean isInsideTriangle(Vector p, Vector a, Vector b, Vector c) {
@@ -187,6 +192,11 @@ public class RepulsionHandler {
                 particle.applyForce(finalForce);
             }
         }
+        
+        float yDeviation = pos.getY() - particle.getInitialY();
+        float strength = 0.0001f * Math.abs(yDeviation);
+        Vector verticalCorrection = new Vector(0, -yDeviation * strength); // sanfte Rückführung
+        particle.applyForce(verticalCorrection);
     }
 
 }
