@@ -7,13 +7,13 @@ import static org.example.orientierungprojekt.util.SimulationConfig.*;
 public class RepulsionHandler {
 
     //Hilfsklasse zur Berechnung der Kollisionen
-
+    /*
     private static float repelForce = -2.0f;
     private static float deflectionFactor = 1.0f;
     private static float angleOffset = 2.0f;
     private static final float FLOW_CORRECTION_SCALE = 2.0f;
     private static final float BACK_FORCE_MULTIPLIER = 1.0f;
-
+   */
     /*public static void applyCircleRepulsion(Particle particle, Obstacle obstacle) {
         
         float obstacleOffset = obstacle.getRadius() / 16; //Durch 16 teilen für Offset beim Zeichnen
@@ -66,19 +66,19 @@ public class RepulsionHandler {
         float influenceRadius = radius;
         Vector direction = particlePos.subtractVector(obstaclePos).getNormalizedVector();
 
-        if (distance < influenceRadius && distance > 0.01f) {
+        if (distance < influenceRadius && distance > 0.0001f) {
             float strength = 1.0f - (distance / influenceRadius);
-            float forceMagnitude = 25.0f * strength;
+            float forceMagnitude = 25.0f * strength; //Warum 25?
             Vector force = direction.scaleVector(forceMagnitude);
             particle.applyForce(force);
         }
-
+        
         // Rückführung auf ursprüngliche y-Koordinate
         float yDeviation = particlePos.getY() - particle.getInitialY();
-        float strength = 0.01f * Math.abs(yDeviation);
+        float strength = 0.0001f * Math.abs(yDeviation);
         Vector verticalCorrection = new Vector(0, -yDeviation * strength); // sanfte Rückführung
         particle.applyForce(verticalCorrection);
-
+        
     }
 
     // ALT

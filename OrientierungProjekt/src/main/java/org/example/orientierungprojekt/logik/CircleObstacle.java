@@ -16,7 +16,7 @@ public class CircleObstacle extends Obstacle {
     public void draw(GraphicsContext gc) {
         float r = getRadius();
         float d = getRadius() * 2;
-        gc.setFill(javafx.scene.paint.Color.RED); // Set the color for the obstacle
+        gc.setFill(Color.RED); // Set the color for the obstacle
         gc.strokeOval(position.getX() - r, position.getY() - r, d , d);
         gc.strokeLine(this.position.getX(), this.position.getY(), this.position.getX() - r, this.position.getY());
     }
@@ -24,9 +24,9 @@ public class CircleObstacle extends Obstacle {
 
     @Override
     public void applyRepulsion(Particle particle) {
-        float influenceRadius = getRadius() * 1.5f;
-        if (getPosition().distanceTo(particle.getPosition()) < influenceRadius) {
+       // float influenceRadius = getRadius() * 1.5f;
+        //if (getPosition().distanceTo(particle.getPosition()) < influenceRadius) {
             RepulsionHandler.applyCircleRepulsion(particle, this);
-        }
+       // }
     }
 }

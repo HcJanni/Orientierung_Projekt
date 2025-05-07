@@ -1,6 +1,5 @@
 package org.example.orientierungprojekt.logik;
 
-import javafx.scene.paint.Color;
 import org.example.orientierungprojekt.util.Vector;
 
 import javafx.animation.AnimationTimer;
@@ -214,9 +213,9 @@ public class ParticleEmitter {
     // Render particles and obstacles
     public void render(GraphicsContext gc) {
 
-        /*if (!clearBeforeRender) {
+        if (!clearBeforeRender) {
             gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        }*/
+        }
 
         for (Particle particle : particles) {
             particle.draw(gc);
