@@ -29,9 +29,6 @@ public class ParticleEmitter {
 
     private float lifespanSeconds = 14.0f; // Standardlebensdauer
 
-    //private int lastSpawnTime = 0;
-    //private int spawnInterval = 20_000_000; // alle 20ms ≈ 50 Partikel pro Sekunde
-
     private float directionDegrees = 0.0f;
 
     private GraphicsContext gc;
@@ -128,37 +125,12 @@ public class ParticleEmitter {
     
     private void initialize() {
         gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-        initializeParticles();  // Statt direkter Code
-
-
-
-        /*int half = maxParticles / 2;
-        float spacing = 2.0f;
-
-        float angleRad = (float) Math.toRadians(directionDegrees);
-        float dx = (float) Math.cos(angleRad);
-        float dy = (float) Math.sin(angleRad);
-
-        for (int i = -half; i < half; i++) {
-            float offsetX = i * 2.0f * -dy;  // Orthogonal zur Flugrichtung verteilen
-            float offsetY = i * 2.0f * dx;
-            addParticle(originVector.getX() + offsetX, originVector.getY() + offsetY);
-        }
-
-
-        for (int i = -half; i < half; i++) {
-            addParticle(this.originVector.getX(), this.originVector.getY() + i * spacing);
-        }
-        setParticleLifespan(lifespanSeconds); // ← neue Zeile*/
-
-        /*for(int i = 0; i < maxObstacles; i++){ //Overlap muss noch verhindert werden
-            addObstacle( 300 + i, 300 + i);
-        }*/
+        initializeParticles();
     }
 
     public void reset() {
         pause(); // Animation stoppen
-        isRunning = false; // ← WICHTIG: internen Status zurücksetzen
+        isRunning = false;
 
         particles.clear();
         obstacles.clear();
@@ -195,21 +167,12 @@ public class ParticleEmitter {
                 float dy = (float) Math.sin(radians);
 
                 float speed = SimulationConfig.GLOBAL_PARTICLE_SPEED;
-                //p1.setVelocity(dx * particleSpeed, dy * particleSpeed);
 
                 p1.setVelocity(dx * speed, dy * speed);
 
-                /*p1.resetToOrigin();
-                p1.setVelocity(1, 0); // Reset velocity*/
                 p1.setLifespan(lifespanSeconds); // Reset lifespan
                 p1.setDead(false); // Mark as alive
             }
-    
-            // Check for collisions with other particles
-            /*for (int j = i + 1; j < particles.size(); j++) {
-                Particle p2 = particles.get(j);
-                p1.particleBounce(p2); // Handle collision
-            }*/
 
             // Apply repulsion from obstacles
             for (Obstacle obs : obstacles) {
@@ -259,15 +222,6 @@ public class ParticleEmitter {
                 render(gc); // Render particles
             }
         };
-
-        /*AnimationTimer timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                update(); // Update particles
-                render(gc);    // Render particles
-            }
-        };
-        timer.start();*/
     }
 
     public void resume() {
@@ -286,7 +240,7 @@ public class ParticleEmitter {
 
     public void resetParticlesOnly() {
         particles.clear();
-        initializeParticles();  // Neue Hilfsmethode, siehe unten
+        initializeParticles();
     }
 
     private void initializeParticles() {
@@ -304,12 +258,6 @@ public class ParticleEmitter {
 
     public void setParticleSpeed(float speed) {
         this.particleSpeed = speed;
-
-        // Wende neue Geschwindigkeit auf alle Partikel an
-        /*for (Particle p : particles) {
-            Vector dir = p.getVelocity().getNormalizedVector();
-            p.setVelocity(dir.scaleVector(speed));
-        }*/
 
         for (Particle p : particles) {
             Vector dir = p.getVelocity().getNormalizedVector();

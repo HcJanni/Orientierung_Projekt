@@ -75,6 +75,7 @@ public class HelloController {
             obstacleLabel.setText("Hindernisgröße: " + value);
         });
 
+        // Dropdown
         obstacleDropdown.setValue("Bitte auswählen"); // Default
 
         clearToggleBox.setSelected(true); // Standardwert: an
@@ -96,8 +97,10 @@ public class HelloController {
             pauseButton.setDisable(true);
         });
 
+        // Schnell - Langsam Verlauf
         drawLegendGradient();
 
+        // Mausklicks
         mainCanvas.setOnMousePressed(event -> {
             if (particleEmitter == null || particleEmitter.isRunning()) {
                 return;
@@ -131,6 +134,7 @@ public class HelloController {
 
         Tooltip.install(helpButton, tooltip);
 
+        // Tooltips Hilfsmenü
         helpButton.setOnAction(e -> {
             Alert info = new Alert(Alert.AlertType.INFORMATION);
             info.setTitle("Kurzanleitung");

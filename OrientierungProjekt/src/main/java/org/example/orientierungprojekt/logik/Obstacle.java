@@ -15,25 +15,9 @@ public abstract class Obstacle {
     }
 
     public Obstacle(float x, float y, float radius) {
-        //x -= radius;
-        //y -= radius;
-        //this.durchmesser = durchmesser;
         this.radius = radius;
         this.position = new Vector(x, y); // Center the obstacle at the given position
     }
-
-    /*public void setPosition(Vector position) {
-        this.position = position;
-    }
-
-    public void setPosition(float x, float y) {
-        this.position.setX(x);
-        this.position.setY(y);
-    }
-
-    public void setRadius(float radius) {
-        this.radius = radius;
-    }*/
 
     public Vector getPosition() {
         return position;
@@ -58,31 +42,6 @@ public abstract class Obstacle {
     public float getInfluenceRadius() {
         return radius * 1.5f;
     }
-
-
-    /*public boolean maxRadius() {
-        System.out.println("Radius ist groß genug: " + radius);
-        return radius >= 100.0f;
-    }
-
-    public boolean isInside(Obstacle obs){
-        Vector obsPos = obs.getPosition();
-        float distance = obsPos.distanceTo(position);
-        return distance < radius;
-    }
-
-    public boolean isInside(Particle particle) {
-        Vector particlePos = particle.getPosition();
-        float distance = particlePos.distanceTo(position);
-        return distance < radius;
-    }
-
-    public boolean isBehindObstacle(Particle particle) {
-        Vector particlePos = particle.getPosition();
-        float dx = position.getX() - particlePos.getX();
-        float dy = position.getY() - particlePos.getY();
-        return (dx * dx + dy * dy) < (radius * radius);
-    }*/
 
     public abstract void draw(GraphicsContext gc);
 

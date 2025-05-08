@@ -31,6 +31,7 @@ public class UIControl {
     }
 
 
+    // Baut die UI Elemente auf
     private void setupListeners() {
         resetButton.setOnAction(e -> {
             System.out.println("Simulation wurde zurückgesetzt.");
@@ -50,7 +51,6 @@ public class UIControl {
 
         obstacleDropdown.setOnAction(e -> {
             String selected = obstacleDropdown.getValue();
-            //.setObstacleType(selected);
         });
 
         lifeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {

@@ -13,10 +13,6 @@ public class TriangleObstacle extends Obstacle {
 
     @Override
     public void draw(GraphicsContext gc) {
-        /*float r = getRadius();
-        gc.setFill(javafx.scene.paint.Color.BLUE); // Set the color for the obstacle
-        gc.strokeRect(position.getX() - r, position.getY() - r, r*2 , r*2);
-        gc.strokeLine(this.position.getX(), this.position.getY(), this.position.getX() - r, this.position.getY());*/
         float r = getRadius(); // wirkt als „Größe“ des Dreiecks
         float cx = position.getX();
         float cy = position.getY();
