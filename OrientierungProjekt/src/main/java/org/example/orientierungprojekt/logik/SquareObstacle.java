@@ -24,5 +24,9 @@ public class SquareObstacle extends Obstacle {
         RepulsionHandler.applySquareRepulsion(particle, this);
     }
 
+    @Override
+    public float getDragCoefficient() {
+        return 1.1f; // hoher Widerstand bei flachen Platten
+    }
 }
 

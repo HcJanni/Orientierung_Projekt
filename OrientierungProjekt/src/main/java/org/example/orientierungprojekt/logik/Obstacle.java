@@ -86,5 +86,23 @@ public abstract class Obstacle {
 
     public abstract void draw(GraphicsContext gc);
 
-    public abstract void applyRepulsion(Particle particle);
+    public void applyRepulsion(Particle particle) {
+        if (this instanceof CircleObstacle) {
+            RepulsionHandler.applyCircleRepulsion(particle, this);
+        } else if (this instanceof SquareObstacle) {
+            RepulsionHandler.applySquareRepulsion(particle, (SquareObstacle) this);
+        } else if (this instanceof TriangleObstacle) {
+            RepulsionHandler.applyTriangleRepulsion(particle, (TriangleObstacle) this);
+        } else if (this instanceof AirfoilObstacle) {
+            RepulsionHandler.applyAirfoilRepulsion(particle, (AirfoilObstacle) this);
+        } else if (this instanceof LeftTriangleObstacle) {
+            RepulsionHandler.applyLeftTriangleRepulsion(particle, (LeftTriangleObstacle) this);
+        } else if (this instanceof DiamondObstacle) {
+            RepulsionHandler.applyDiamondRepulsion(particle, (DiamondObstacle) this);
+        }
+    }
+
+    public float getDragCoefficient() {
+        return 1.0f; // Default für runde Körper
+    }
 }

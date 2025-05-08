@@ -29,4 +29,9 @@ public class CircleObstacle extends Obstacle {
             RepulsionHandler.applyCircleRepulsion(particle, this);
        // }
     }
+
+    @Override
+    public float getDragCoefficient() {
+        return 1.2f; // typischer Wert für Kugeln
+    }
 }

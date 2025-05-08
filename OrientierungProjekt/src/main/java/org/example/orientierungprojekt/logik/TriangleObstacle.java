@@ -43,5 +43,9 @@ public class TriangleObstacle extends Obstacle {
         RepulsionHandler.applyTriangleRepulsion(particle, this);
     }
 
+    @Override
+    public float getDragCoefficient() {
+        return 0.4f; // spitze Formen, mäßiger Widerstand
+    }
 }
 

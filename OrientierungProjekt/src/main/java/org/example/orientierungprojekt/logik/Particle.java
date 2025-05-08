@@ -163,9 +163,12 @@ public class Particle {
             this.velocity.add(nudge);
         }
         this.position.add(this.velocity);
-        // Gradually align velocity with the global flow
+        //Gradually align velocity with the global flow
         Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
         velocity.add(flowCorrection);
+
+
+
         this.angleVelocity += this.angleAcceleration;
         this.angle += this.angleVelocity;
 
@@ -178,30 +181,37 @@ public class Particle {
      }
 
     public void draw(GraphicsContext gc) {
-        /*float maxSpeed = SimulationConfig.getSpeed(); // oder fester Wert z. B. 5.0f
-        float actualSpeed = velocity.getLength();
-        double intensity = Math.min(actualSpeed / maxSpeed, 1.0);
+        float speed = velocity.getLength();  // tatsächliche Geschwindigkeit
+        float rho = 1.225f;
+        float dynamicPressure = 0.5f * rho * speed * speed;
 
-        // Geschwindigkeit in eine Farbe umwandeln (z. B. Blau = schnell, Rot = langsam)
-        Color c = Color.color(1.0 - intensity, 0.0, intensity); // Rot → Blau
+        // Visualisierung: je höher der Druck, desto roter
+        float maxPressure = 2.0f; // Skaliere je nach Simulation
+        float intensity = Math.min(dynamicPressure / maxPressure, 1f);
+        Color color = new Color(intensity, 0, 1.0 - intensity, 1.0);
 
-        gc.setFill(c);
-        gc.fillOval(position.getX(), position.getY(), radius, radius);*/
-
-        float speed = velocity.getLength();  // tatsächliche Geschwindigkeit des Partikels
-        float maxSpeed = 3.0f;              // ggf. anpassen
-
-        float intensity = Math.min(speed / maxSpeed, 1.0f); // Skaliert auf 0–1
-        Color color = new Color(intensity, 0, 1.0f - intensity, 1.0); // von Blau (langsam) zu Rot (schnell)
+        if (speed < 0.01f) {
+            gc.setFill(Color.GRAY); // zeigt: steht quasi still
+        } else {
+            gc.setFill(color);
+        }
 
         gc.setFill(color);
         gc.fillOval(position.getX(), position.getY(), radius, radius);
 
+    }
 
-        //gc.setFill(Color.BLUE);
-        //gc.fillOval(position.getX() - RADIUS, position.getY() - RADIUS, DURCHMESSER, DURCHMESSER); // (x,y,hoehe,breite) Einfach ein Punkt
-        //gc.strokeLine(position.getX(), position.getY(), position.getX(), position.getY());
-       // gc.strokeLine(0, 0, position.getX(), position.getY() + RADIUS); // ZUM DEBUGGEN
+    public void applyDrag(float rho, float dragCoefficient) {
+        float speed = velocity.getLength();
+        if (speed < SimulationConfig.GLOBAL_PARTICLE_SPEED) return;
+
+        float area = (float) Math.PI * radius * radius;
+        float dragMagnitude = SimulationConfig.DRAG_SCALING * 0.5f * dragCoefficient * rho * area * speed * speed;
+
+        Vector dragDirection = velocity.getNormalizedVector().scaleVector(-1);
+        Vector dragForce = dragDirection.scaleVector(dragMagnitude);
+
+        applyForce(dragForce);
     }
 
 }

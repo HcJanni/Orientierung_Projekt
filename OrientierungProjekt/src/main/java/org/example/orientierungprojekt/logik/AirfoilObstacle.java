@@ -12,13 +12,13 @@ public class AirfoilObstacle extends Obstacle {
 
     public AirfoilObstacle(float x, float y, float size) {
         super(x, y, size);
-        this.width = size * 2;
-        this.height = size;
+        this.width = size * 3;
+        this.height = size * 3;
     }
 
     @Override
     public void draw(GraphicsContext gc) {
-        int steps = 40;
+        int steps = 60;
         double[] xPoints = new double[steps * 2];
         double[] yPoints = new double[steps * 2];
 
@@ -53,5 +53,10 @@ public class AirfoilObstacle extends Obstacle {
 
     public float getHeight() {
         return height;
+    }
+
+    @Override
+    public float getDragCoefficient() {
+        return 0.04f; // stromlinienförmig, sehr geringer Widerstand
     }
 }

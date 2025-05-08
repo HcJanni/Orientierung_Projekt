@@ -40,6 +40,7 @@ public class UIControl {
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             currentSpeed = newVal.floatValue();
             System.out.println("Neue Geschwindigkeit: " + currentSpeed);
+            SimulationConfig.GLOBAL_PARTICLE_SPEED = currentSpeed;
             emitter.setParticleSpeed(currentSpeed);
 
             // GLOBAL_FLOW anpassen
@@ -67,8 +68,5 @@ public class UIControl {
             emitter.setWindDirection(angle);
             emitter.reset(); // ← Partikel neu erzeugen mit neuer Richtung
         });
-
-
-        // TODO: Weitere Slider-Events folgen später hier
     }
 }

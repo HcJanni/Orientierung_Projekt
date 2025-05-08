@@ -1,5 +1,6 @@
 package org.example.orientierungprojekt.logik;
 
+import org.example.orientierungprojekt.util.SimulationConfig;
 import org.example.orientierungprojekt.util.Vector;
 
 import javafx.animation.AnimationTimer;
@@ -85,6 +86,9 @@ public class ParticleEmitter {
             case "Quadrat" -> obstacles.add(new SquareObstacle(x, y, size));
             case "Dreieck" -> obstacles.add(new TriangleObstacle(x, y, size));
             case "Flügelprofil" -> obstacles.add(new AirfoilObstacle(x, y, size));
+            case "Dreieck gedreht" -> obstacles.add(new LeftTriangleObstacle(x, y, size));
+            case "Tropfen" -> obstacles.add(new DropObstacle(x, y, size));
+            case "Diamant" -> obstacles.add(new DiamondObstacle(x, y, size));
         }
     }
 
@@ -177,15 +181,24 @@ public class ParticleEmitter {
     private void update() {
         for (int i = 0; i < particles.size(); i++) {
             Particle p1 = particles.get(i);
-    
+
+            if (i == 0) {
+                System.out.printf("Particle[0] speed: %.2f%n", p1.getVelocity().getLength());
+            }
             // Check if the particle is dead and reset it
             if (p1.isDead()) {
                 gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
                 p1.resetToOrigin();
+
                 double radians = Math.toRadians(directionDegrees);
                 float dx = (float) Math.cos(radians);
                 float dy = (float) Math.sin(radians);
-                p1.setVelocity(dx * particleSpeed, dy * particleSpeed);
+
+                float speed = SimulationConfig.GLOBAL_PARTICLE_SPEED;
+                //p1.setVelocity(dx * particleSpeed, dy * particleSpeed);
+
+                p1.setVelocity(dx * speed, dy * speed);
+
                 /*p1.resetToOrigin();
                 p1.setVelocity(1, 0); // Reset velocity*/
                 p1.setLifespan(lifespanSeconds); // Reset lifespan
@@ -205,6 +218,8 @@ public class ParticleEmitter {
             }
     
             // Update particle position and lifespan
+            p1.applyDrag(1.225f, 0.47f); // ρ = Luftdichte, Cd = Kugel
+
             p1.updatePosition();
             p1.updateLifespan(1.0f / 60.0f); // Assuming ~60 FPS, deltaTime = 1/60
         }
@@ -291,9 +306,19 @@ public class ParticleEmitter {
         this.particleSpeed = speed;
 
         // Wende neue Geschwindigkeit auf alle Partikel an
-        for (Particle p : particles) {
+        /*for (Particle p : particles) {
             Vector dir = p.getVelocity().getNormalizedVector();
             p.setVelocity(dir.scaleVector(speed));
+        }*/
+
+        for (Particle p : particles) {
+            Vector dir = p.getVelocity().getNormalizedVector();
+            if (dir.getLength() < 0.01f) {
+                // Fallback: Richtung aus globalem Strömungsvektor
+                dir = SimulationConfig.GLOBAL_FLOW.getNormalizedVector();
+            }
+            p.setVelocity(dir.scaleVector(speed));
+            System.out.println(">> Velocity direkt gesetzt: " + p.getVelocity().getLength());
         }
     }
 
