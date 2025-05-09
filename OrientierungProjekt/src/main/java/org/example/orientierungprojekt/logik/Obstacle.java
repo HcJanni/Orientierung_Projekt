@@ -51,8 +51,6 @@ public abstract class Obstacle {
             RepulsionHandler.applySquareRepulsion(particle, (SquareObstacle) this);
         } else if (this instanceof TriangleObstacle) {
             RepulsionHandler.applyTriangleRepulsion(particle, (TriangleObstacle) this);
-        } else if (this instanceof AirfoilObstacle) {
-            RepulsionHandler.applyAirfoilRepulsion(particle, (AirfoilObstacle) this);
         } else if (this instanceof LeftTriangleObstacle) {
             RepulsionHandler.applyLeftTriangleRepulsion(particle, (LeftTriangleObstacle) this);
         } else if (this instanceof DiamondObstacle) {

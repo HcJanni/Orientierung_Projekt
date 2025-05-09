@@ -31,18 +31,11 @@
                     </children>
                 </HBox>
             <Button fx:id="resetButton" prefWidth="165.0" text="Reset" />
-
-                <Label fx:id="particleLabel" layoutX="322.0" layoutY="10.0" text="Anzahl der Partikel: 600.0" textFill="WHITE" />
-                <Slider fx:id="particleSlider" max="600" min="1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="600" />
-
                 <Label fx:id="speedLabel" layoutX="322.0" layoutY="10.0" text="Geschwindigkeit: 1.0" textFill="WHITE" />
                 <Slider fx:id="speedSlider" layoutX="20.0" layoutY="121.0" max="2" min="0.1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="1" />
 
                 <Label fx:id="lifeLabel" layoutX="322.0" layoutY="10.0" text="Lebensdauer in Sekunden: 14.0" textFill="WHITE" />
                 <Slider fx:id="lifeSlider" layoutX="20.0" layoutY="325.0" max="28" min="1" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="14" />
-
-                <Label fx:id="directionLabel" layoutX="322.0" layoutY="10.0" text="Windrichtung: 25°" textFill="WHITE" />
-                <Slider fx:id="directionSlider" layoutX="20.0" layoutY="349.0" max="50" min="0" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="25" />
 
                 <Label fx:id="obstacleLabel" layoutX="322.0" layoutY="10.0" text="Hindernisgröße: 50" textFill="WHITE" />
                 <Slider fx:id="obstacleSizeSlider" layoutX="20.0" layoutY="349.0" max="100" min="10" prefWidth="150" style="-fx-control-inner-background: #778da9; -fx-base: #023047;" value="50" />
@@ -68,8 +61,6 @@
                             <String fx:value="Diamant"/>
                             <String fx:value="Dreieck"/>
                             <String fx:value="Dreieck gedreht"/>
-                            <String fx:value="Tropfen"/>
-                            <String fx:value="Flügelprofil"/>
                         </FXCollections>
                     </items>
                 </ComboBox>
