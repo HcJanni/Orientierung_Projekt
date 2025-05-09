@@ -192,7 +192,7 @@ Bedienung:
     private void resetAndUnlock() {
         particleEmitter.reset();
         startButton.setDisable(false);
-        pauseButton.setDisable(true);
+        pauseButton.setDisable(false);
     }
 
 }
