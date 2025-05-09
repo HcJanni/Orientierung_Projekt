@@ -30,11 +30,6 @@ public class UIControl {
 
     // Baut die UI Elemente auf
     private void setupListeners() {
-        resetButton.setOnAction(e -> {
-            System.out.println("Simulation wurde zurückgesetzt.");
-            emitter.reset(); // Diese Methode musst du noch in ParticleEmitter implementieren
-        });
-
         speedSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             currentSpeed = newVal.floatValue();
             System.out.println("Neue Geschwindigkeit: " + currentSpeed);
