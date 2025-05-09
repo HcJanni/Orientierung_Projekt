@@ -10,12 +10,12 @@ public abstract class Obstacle {
     private float size;
 
     public Obstacle(float x, float y) {
-        this(x, y, 50.0f); // Default radius and repel force
+        this(x, y, 50.0f); // Default radius
     }
 
     public Obstacle(float x, float y, float radius) {
         this.radius = radius;
-        this.position = new Vector(x, y); // Center the obstacle at the given position
+        this.position = new Vector(x, y);
     }
 
     public Vector getPosition() {

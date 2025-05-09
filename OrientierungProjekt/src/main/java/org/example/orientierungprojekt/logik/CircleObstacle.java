@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 
 public class CircleObstacle extends Obstacle {
 
-    private final float dragCoefficient = 1.2f; // typischer Wert für Kugeln
+    private final float dragCoefficient = 1.2f; // typischer Wert für Kugeln ! Quelle?!
  
     public CircleObstacle(float x, float y) {
         super(x, y, 50.0f);

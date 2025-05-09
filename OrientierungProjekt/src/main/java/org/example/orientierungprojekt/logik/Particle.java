@@ -148,7 +148,7 @@ public class Particle {
         this.velocity.add(this.acceleration);
         // Wenn Geschwindigkeit extrem klein ist, Boost geben
         if (this.velocity.getLength() < 0.05f) {
-            Vector nudge = GLOBAL_FLOW.getNormalizedVector().scaleVector(0.3f);
+            Vector nudge = GLOBAL_FLOW.getNormalizedVector().scaleVector(0.5f);
             this.velocity.add(nudge);
         }
         this.position.add(this.velocity);
@@ -156,13 +156,9 @@ public class Particle {
         Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
         velocity.add(flowCorrection);
 
-        this.acceleration.scale(0.25f);
+        this.acceleration.scale(0.3f);
 
     }
-
-     public void updateDirection(float angleInRadians){
-        
-     }
 
     public void draw(GraphicsContext gc) {
         float speed = velocity.getLength();  // tatsächliche Geschwindigkeit

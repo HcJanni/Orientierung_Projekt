@@ -15,7 +15,7 @@ public class SquareObstacle extends Obstacle {
     public void draw(GraphicsContext gc) {
         float r = getRadius();
         gc.setFill(Color.GREY); // Set the color for the obstacle
-        gc.fillRect(position.getX() - r, position.getY() - r, r*2 , r*2);
+      //  gc.fillRect(position.getX() - r, position.getY() - r, r*2 , r*2);
         gc.strokeRect(position.getX() - r, position.getY() - r, r*2 , r*2);
     }
 

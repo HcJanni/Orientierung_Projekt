@@ -55,11 +55,12 @@ public class RepulsionHandler {
             if (Math.abs(dx) > Math.abs(dy)) {
                 // Links oder rechts → vertikale Wand → Kraft horizontal
                 float pushX = dx > 0 ? 1 : -1;
-                particle.applyForce(new Vector(pushX * 15.0f, 0));
+                float pushY = dy > 0 ? 1 : -1;
+                particle.applyForce(new Vector(pushX, pushY));
             } else {
                 // Oben oder unten → horizontale Wand → Kraft vertikal
                 float pushY = dy > 0 ? 1 : -1;
-                particle.applyForce(new Vector(0, pushY * 15.0f));
+                particle.applyForce(new Vector(0, pushY));
             }
 
         }
