@@ -1,6 +1,5 @@
 package org.example.orientierungprojekt.logik;
 
-import org.example.orientierungprojekt.util.SimulationConfig;
 import org.example.orientierungprojekt.util.Vector;
 
 public class RepulsionHandler {
