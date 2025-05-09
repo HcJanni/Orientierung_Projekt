@@ -8,19 +8,17 @@ public class UIControl {
 
     private ParticleEmitter emitter;
 
-    private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
+    private Slider speedSlider, particleSlider, lifeSlider;
     private Button resetButton;
     private float currentSpeed = 5.0f; // Standardwert
     private ComboBox<String> obstacleDropdown;
 
     public UIControl(ParticleEmitter emitter,
-                     Slider speedSlider, Slider particleSlider, Slider lifeSlider, Slider directionSlider,
+                     Slider speedSlider, Slider lifeSlider,
                      Button resetButton, ComboBox<String> obstacleDropdown) {
         this.emitter = emitter;
         this.speedSlider = speedSlider;
-        this.particleSlider = particleSlider;
         this.lifeSlider = lifeSlider;
-        this.directionSlider = directionSlider;
         this.resetButton = resetButton;
         this.obstacleDropdown = obstacleDropdown;
 
@@ -48,17 +46,6 @@ public class UIControl {
         lifeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             float seconds = newVal.floatValue();
             emitter.setParticleLifespan(seconds);
-        });
-
-        particleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            int newCount = newVal.intValue();
-            emitter.setMaxParticles(newCount);
-        });
-
-        directionSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            float angle = newVal.floatValue(); // in Grad
-            emitter.setWindDirection(angle);
-            emitter.reset(); // ← Partikel neu erzeugen mit neuer Richtung
         });
     }
 }

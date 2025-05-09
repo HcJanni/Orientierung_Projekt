@@ -82,9 +82,7 @@ public class ParticleEmitter {
             case "Kreis" -> obstacles.add(new CircleObstacle(x, y, size));
             case "Quadrat" -> obstacles.add(new SquareObstacle(x, y, size));
             case "Dreieck" -> obstacles.add(new TriangleObstacle(x, y, size));
-            case "Flügelprofil" -> obstacles.add(new AirfoilObstacle(x, y, size));
             case "Dreieck gedreht" -> obstacles.add(new LeftTriangleObstacle(x, y, size));
-            case "Tropfen" -> obstacles.add(new DropObstacle(x, y, size));
             case "Diamant" -> obstacles.add(new DiamondObstacle(x, y, size));
         }
     }

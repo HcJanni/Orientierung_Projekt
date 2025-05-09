@@ -28,7 +28,7 @@ public class HelloController {
     private UIControl uiControl;
 
     @FXML
-    private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
+    private Slider speedSlider, lifeSlider;
 
     @FXML
     private Label speedLabel, particleLabel, lifeLabel, obstacleLabel;
@@ -52,17 +52,6 @@ public class HelloController {
             speedLabel.setText("Geschwindigkeit: " + value);
         });
 
-        // Partikel (ganzzahlig)
-        particleSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            int value = newVal.intValue();
-            particleLabel.setText("Anzahl der Partikel: " + value);
-
-            // Fläche & Partikel zurücksetzen
-            if (particleEmitter != null) {
-                resetAndUnlock();
-            }
-        });
-
         // Lebensdauer
         lifeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             double value = Math.round(newVal.doubleValue() * 10.0) / 10.0;
@@ -82,7 +71,7 @@ public class HelloController {
         clearToggleBox.setOnAction(e -> {
             boolean clear = clearToggleBox.isSelected();
             particleEmitter.setClearBeforeRender(clear);
-            resetAndUnlock(); // sofort zurücksetzen
+            //resetAndUnlock(); // sofort zurücksetzen
         });
 
         startButton.setOnAction(e -> {
@@ -174,7 +163,7 @@ Bedienung:
         // UIControl verbinden
         uiControl = new UIControl(
                 particleEmitter,
-                speedSlider, particleSlider, lifeSlider, directionSlider,
+                speedSlider, lifeSlider,
                 resetButton, obstacleDropdown
         );
     }

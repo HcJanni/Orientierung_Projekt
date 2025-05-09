@@ -15,11 +15,13 @@ public class HelloApplication extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("hello-view.fxml"));
         Parent root = loader.load();
 
+
         // Szene erstellen
         Scene scene = new Scene(root, 1024, 768);
         stage.setTitle("2D Particle System mit UI");
         stage.setScene(scene);
         stage.show();
+        stage.setResizable(false);
 
         // Controller holen und Simulation starten
         HelloController controller = loader.getController();
