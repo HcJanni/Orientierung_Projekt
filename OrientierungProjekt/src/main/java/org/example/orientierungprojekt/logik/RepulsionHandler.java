@@ -14,7 +14,7 @@ public class RepulsionHandler {
 
         if (distance < influenceRadius && distance > 0.0001f) {
             float strength = 1.0f - (distance / influenceRadius);
-            float forceMagnitude = 25.0f * strength; //Warum 25?
+            float forceMagnitude = 25.0f * strength;
             Vector force = direction.scaleVector(forceMagnitude);
             particle.applyForce(force);
         }
@@ -23,20 +23,7 @@ public class RepulsionHandler {
         applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
-        float rho = 1.225f; // Luftdichte
-        float speed = particle.getVelocity().getLength();
-        float area = (float) Math.PI * particle.getRadius() * particle.getRadius(); // projizierte Fläche
-        float Cd = obstacle.getDragCoefficient();
-
-        float dragMagnitude = 0.5f * Cd * rho * area * speed * speed;
-        dragMagnitude = Math.min(dragMagnitude, 0f); // 🔧 Sicherer Grenzwert
-
-        if (speed < 0.001f) return; // zu langsam für sinnvollen Drag
-
-        Vector dragDirection = particle.getVelocity().getNormalizedVector().scaleVector(-1); // entgegen der Bewegung
-        Vector dragForce = dragDirection.scaleVector(dragMagnitude);
-
-        particle.applyForce(dragForce);
+        applyDragForce(particle, obstacle);
     }
 
     public static void applySquareRepulsion(Particle particle, SquareObstacle obstacle) {
@@ -61,23 +48,22 @@ public class RepulsionHandler {
                 float pushY = dy > 0 ? 1 : -1;
                 particle.applyForce(new Vector(0, pushY));
             }
-
         }
 
         applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
-        float rho = 1.225f; // Luftdichte
+        float rho = 1.225f;
         float speed = particle.getVelocity().getLength();
-        float area = (float) Math.PI * particle.getRadius() * particle.getRadius(); // projizierte Fläche
+        float area = (float) Math.PI * particle.getRadius() * particle.getRadius();
         float Cd = obstacle.getDragCoefficient();
 
         float dragMagnitude = 0.5f * Cd * rho * area * speed * speed;
-        dragMagnitude = Math.min(dragMagnitude, 0f); // 🔧 Sicherer Grenzwert
+        dragMagnitude = Math.min(dragMagnitude, 0f);
 
-        if (speed < 0.001f) return; // zu langsam für sinnvollen Drag
+        if (speed < 0.001f) return;
 
-        Vector dragDirection = particle.getVelocity().getNormalizedVector().scaleVector(-1); // entgegen der Bewegung
+        Vector dragDirection = particle.getVelocity().getNormalizedVector().scaleVector(-1);
         Vector dragForce = dragDirection.scaleVector(dragMagnitude);
 
         particle.applyForce(dragForce);
@@ -101,20 +87,7 @@ public class RepulsionHandler {
         applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
-        float rho = 1.225f; // Luftdichte
-        float speed = particle.getVelocity().getLength();
-        float area = (float) Math.PI * particle.getRadius() * particle.getRadius(); // projizierte Fläche
-        float Cd = obstacle.getDragCoefficient();
-
-        float dragMagnitude = 0.5f * Cd * rho * area * speed * speed;
-        dragMagnitude = Math.min(dragMagnitude, 0f); // 🔧 Sicherer Grenzwert
-
-        if (speed < 0.001f) return; // zu langsam für sinnvollen Drag
-
-        Vector dragDirection = particle.getVelocity().getNormalizedVector().scaleVector(-1); // entgegen der Bewegung
-        Vector dragForce = dragDirection.scaleVector(dragMagnitude);
-
-        particle.applyForce(dragForce);
+        applyDragForce(particle, obstacle);
     }
 
     private static boolean isInsideTriangle(Vector p, Vector a, Vector b, Vector c) {
@@ -152,20 +125,7 @@ public class RepulsionHandler {
         applyVerticalCorrection(particle);
 
         // Luftwiderstand
-        float rho = 1.225f;
-        float speed = particle.getVelocity().getLength();
-        float area = (float) Math.PI * particle.getRadius() * particle.getRadius();
-        float Cd = obstacle.getDragCoefficient();
-
-        float dragMagnitude = 0.5f * Cd * rho * area * speed * speed;
-        dragMagnitude = Math.min(dragMagnitude, 0f);
-
-        if (speed < 0.001f) return;
-
-        Vector dragDirection = particle.getVelocity().getNormalizedVector().scaleVector(-1);
-        Vector dragForce = dragDirection.scaleVector(dragMagnitude);
-
-        particle.applyForce(dragForce);
+        applyDragForce(particle, obstacle);
     }
 
     private static boolean isInsideDiamond(Vector p, Vector top, Vector right, Vector bottom, Vector left) {
@@ -192,6 +152,17 @@ public class RepulsionHandler {
         applyVerticalCorrection(particle);
 
         // Luftwiderstand
+        applyDragForce(particle, obstacle);
+    }
+
+    private static void applyVerticalCorrection(Particle particle){
+        float yDeviation = particle.getPosition().getY() - particle.getInitialY();
+        float verticalStrength = 0.0001f * Math.abs(yDeviation);
+        Vector correction = new Vector(0, -yDeviation * verticalStrength);
+        particle.applyForce(correction);
+    }
+
+    private static void applyDragForce(Particle particle, Obstacle obstacle){
         float rho = 1.225f;
         float speed = particle.getVelocity().getLength();
         float area = (float) Math.PI * particle.getRadius() * particle.getRadius();
@@ -206,13 +177,6 @@ public class RepulsionHandler {
         Vector dragForce = dragDirection.scaleVector(dragMagnitude);
 
         particle.applyForce(dragForce);
-    }
-
-    private static void applyVerticalCorrection(Particle particle){
-        float yDeviation = particle.getPosition().getY() - particle.getInitialY();
-        float verticalStrength = 0.0001f * Math.abs(yDeviation);
-        Vector correction = new Vector(0, -yDeviation * verticalStrength);
-        particle.applyForce(correction);
     }
 
 }

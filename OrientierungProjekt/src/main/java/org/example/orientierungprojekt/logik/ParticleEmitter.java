@@ -149,9 +149,6 @@ public class ParticleEmitter {
         for (int i = 0; i < particles.size(); i++) {
             Particle p1 = particles.get(i);
 
-            if (i == 0) {
-                System.out.printf("Particle[0] speed: %.2f%n", p1.getVelocity().getLength());
-            }
             // Check if the particle is dead and reset it
             if (p1.isDead()) {
                 gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
