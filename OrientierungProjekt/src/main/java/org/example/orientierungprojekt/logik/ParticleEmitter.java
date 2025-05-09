@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class ParticleEmitter {
 
     private final Vector originVector;
-    private RepulsionHandler repulsionHandler;
+   // private RepulsionHandler repulsionHandler;
 
     private List<Particle> particles;
     private final List<Obstacle> obstacles;
@@ -20,7 +20,7 @@ public class ParticleEmitter {
     private int maxParticles = 300;
     private final int maxObstacles = 1;
 
-    private float particleSpeed = 5.0f;
+  //  private float particleSpeed = 5.0f;
 
     private boolean clearBeforeRender = true; // Standard: löschen aktiv
 
@@ -37,7 +37,7 @@ public class ParticleEmitter {
         this.originVector = new Vector(0, 300);
         this.particles = new ArrayList<>(maxParticles);
         this.obstacles = new ArrayList<>(maxObstacles);
-        this.repulsionHandler = new RepulsionHandler();
+        //this.repulsionHandler = new RepulsionHandler();
     }
 
     public void addParticle(float x, float y) {
@@ -257,7 +257,7 @@ public class ParticleEmitter {
     public boolean isRunning() { return isRunning; }
 
     public void setParticleSpeed(float speed) {
-        this.particleSpeed = speed;
+       // this.particleSpeed = speed;
 
         for (Particle p : particles) {
             Vector dir = p.getVelocity().getNormalizedVector();

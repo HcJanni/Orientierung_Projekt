@@ -4,11 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class DiamondObstacle extends Obstacle {
-    private float size;
 
     public DiamondObstacle(float x, float y, float size) {
         super(x, y, size);
-        this.size = size;
     }
 
     @Override
@@ -33,7 +31,8 @@ public class DiamondObstacle extends Obstacle {
         }
 
         gc.setLineWidth(1);
-        gc.setStroke(Color.DARKBLUE);
+        gc.setFill(Color.GREY);
+        gc.fillPolygon(xPoints, yPoints, 4);
         gc.strokePolygon(xPoints, yPoints, 4);
     }
 

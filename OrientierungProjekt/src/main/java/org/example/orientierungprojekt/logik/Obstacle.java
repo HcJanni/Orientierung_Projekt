@@ -6,7 +6,6 @@ import javafx.scene.canvas.GraphicsContext;
 public abstract class Obstacle {
 
     protected Vector position;
-    private float durchmesser;
     private float radius;
     private float size;
 

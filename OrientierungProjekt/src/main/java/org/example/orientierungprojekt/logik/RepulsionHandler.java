@@ -2,7 +2,6 @@ package org.example.orientierungprojekt.logik;
 
 import org.example.orientierungprojekt.util.SimulationConfig;
 import org.example.orientierungprojekt.util.Vector;
-import static org.example.orientierungprojekt.util.SimulationConfig.*;
 
 public class RepulsionHandler {
 
@@ -22,10 +21,7 @@ public class RepulsionHandler {
         }
 
         // Rückführung auf ursprüngliche y-Koordinate
-        float yDeviation = particlePos.getY() - particle.getInitialY();
-        float strength = 0.0001f * Math.abs(yDeviation);
-        Vector verticalCorrection = new Vector(0, -yDeviation * strength); // sanfte Rückführung
-        particle.applyForce(verticalCorrection);
+        applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
         float rho = 1.225f; // Luftdichte
@@ -65,7 +61,10 @@ public class RepulsionHandler {
                 float pushY = dy > 0 ? 1 : -1;
                 particle.applyForce(new Vector(0, pushY * 15.0f));
             }
+
         }
+
+        applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
         float rho = 1.225f; // Luftdichte
@@ -100,10 +99,7 @@ public class RepulsionHandler {
             particle.applyForce(away.scaleVector(1.0f));
         }
 
-        float yDeviation = p.getY() - particle.getInitialY();
-        float strength = 0.0001f * Math.abs(yDeviation);
-        Vector verticalCorrection = new Vector(0, -yDeviation * strength); // sanfte Rückführung
-        particle.applyForce(verticalCorrection);
+        applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
         float rho = 1.225f; // Luftdichte
@@ -165,10 +161,7 @@ public class RepulsionHandler {
             }
         }
 
-        float yDeviation = pos.getY() - particle.getInitialY();
-        float strength = 0.0001f * Math.abs(yDeviation);
-        Vector verticalCorrection = new Vector(0, -yDeviation * strength);
-        particle.applyForce(verticalCorrection);
+        applyVerticalCorrection(particle);
 
         float rho = 1.225f;
         float speed = particle.getVelocity().getLength();
@@ -185,8 +178,6 @@ public class RepulsionHandler {
 
         particle.applyForce(dragForce);
     }
-
-
 
     public static void applyDiamondRepulsion(Particle particle, DiamondObstacle obstacle) {
         Vector p = particle.getPosition();
@@ -207,10 +198,7 @@ public class RepulsionHandler {
         }
 
         // Rückführung
-        float yDeviation = p.getY() - particle.getInitialY();
-        float strength = 0.0001f * Math.abs(yDeviation);
-        Vector verticalCorrection = new Vector(0, -yDeviation * strength);
-        particle.applyForce(verticalCorrection);
+        applyVerticalCorrection(particle);
 
         // Luftwiderstand
         float rho = 1.225f;
@@ -228,7 +216,6 @@ public class RepulsionHandler {
 
         particle.applyForce(dragForce);
     }
-
 
     private static boolean isInsideDiamond(Vector p, Vector top, Vector right, Vector bottom, Vector left) {
         // Einfache Methode: zerlege Raute in zwei Dreiecke oben/unten
@@ -251,10 +238,7 @@ public class RepulsionHandler {
         }
 
         // Rückführung
-        float yDeviation = p.getY() - particle.getInitialY();
-        float strength = 0.0001f * Math.abs(yDeviation);
-        Vector verticalCorrection = new Vector(0, -yDeviation * strength);
-        particle.applyForce(verticalCorrection);
+        applyVerticalCorrection(particle);
 
         // Luftwiderstand
         float rho = 1.225f;
@@ -300,10 +284,7 @@ public class RepulsionHandler {
         }
 
         // Rückführung zur Initialhöhe
-        float yDeviation = pos.getY() - particle.getInitialY();
-        float verticalStrength = 0.0001f * Math.abs(yDeviation);
-        Vector correction = new Vector(0, -yDeviation * verticalStrength);
-        particle.applyForce(correction);
+        applyVerticalCorrection(particle);
 
         // Formwiderstand (drag force)
         float rho = 1.225f; // Luftdichte
@@ -322,5 +303,11 @@ public class RepulsionHandler {
         particle.applyForce(dragForce);
     }
 
+    private static void applyVerticalCorrection(Particle particle){
+        float yDeviation = particle.getPosition().getY() - particle.getInitialY();
+        float verticalStrength = 0.0001f * Math.abs(yDeviation);
+        Vector correction = new Vector(0, -yDeviation * verticalStrength);
+        particle.applyForce(correction);
+    }
 
 }

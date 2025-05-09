@@ -3,8 +3,6 @@ package org.example.orientierungprojekt.logik;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-import org.example.orientierungprojekt.util.Vector;
-
 public class AirfoilObstacle extends Obstacle {
 
     private final float width;
@@ -13,7 +11,7 @@ public class AirfoilObstacle extends Obstacle {
     public AirfoilObstacle(float x, float y, float size) {
         super(x, y, size);
         this.width = size * 3;
-        this.height = size * 3;
+        this.height = size * 6;
     }
 
     @Override
@@ -38,8 +36,9 @@ public class AirfoilObstacle extends Obstacle {
             yPoints[2 * steps - 1 - i] = position.getY() + yt * height;
         }
 
-        gc.setFill(Color.DARKTURQUOISE);
+        gc.setFill(Color.GREY);
         gc.fillPolygon(xPoints, yPoints, xPoints.length);
+        gc.strokePolygon(xPoints, yPoints, xPoints.length);
     }
 
     @Override

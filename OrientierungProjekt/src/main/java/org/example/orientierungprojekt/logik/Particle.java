@@ -18,11 +18,6 @@ public class Particle {
     private Vector acceleration; //Aenderungsrate der Geschwindigkeit
 
     private final float initialY;
-
-    private float angle;
-    private float angleVelocity; //Aenderungsrate der Position mit Hilfe eines Winkels
-    private float angleAcceleration; //Aenderungsrate der Geschwindigkeit mit Hilfe eines Winkels
-
     private final float DURCHMESSER = 10.0f;
     private final float RADIUS = DURCHMESSER / 2.0f;
     private final float MASS = 1.0f;
@@ -37,9 +32,6 @@ public class Particle {
         this.position = new Vector(0.5f, 0.5f);
         this.velocity = new Vector(1, 0);
         this.acceleration = new Vector(0, 0);
-        this.angle = 0.0f;
-        this.angleVelocity = 0.0f;
-        this.angleAcceleration = 0.0f;
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
         this.initialY = position.getY();
@@ -52,9 +44,6 @@ public class Particle {
         this.position = new Vector(x, y);
         this.velocity = new Vector(1, 0);
         this.acceleration = new Vector(0, 0);
-        this.angle = 0.0f;
-        this.angleVelocity = 0.0f;
-        this.angleAcceleration = 0.0f;
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
         this.initialY = position.getY();
@@ -166,11 +155,6 @@ public class Particle {
         //Gradually align velocity with the global flow
         Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
         velocity.add(flowCorrection);
-
-
-
-        this.angleVelocity += this.angleAcceleration;
-        this.angle += this.angleVelocity;
 
         this.acceleration.scale(0.25f);
 

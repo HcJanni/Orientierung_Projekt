@@ -4,11 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class LeftTriangleObstacle extends Obstacle {
-    private float size;
 
     public LeftTriangleObstacle(float x, float y, float size) {
         super(x, y, size);
-        this.size = size;
     }
 
     @Override
@@ -30,7 +28,8 @@ public class LeftTriangleObstacle extends Obstacle {
         };
 
         gc.setLineWidth(1);
-        gc.setStroke(Color.DARKRED);
+        gc.setFill(Color.GREY);
+        gc.fillPolygon(xPoints, yPoints, 3);
         gc.strokePolygon(xPoints, yPoints, 3);
     }
 

@@ -11,10 +11,7 @@ public class UIControl {
     private Slider speedSlider, particleSlider, lifeSlider, directionSlider;
     private Button resetButton;
     private float currentSpeed = 5.0f; // Standardwert
-    private float currentDirection = 0.0f;
     private ComboBox<String> obstacleDropdown;
-
-
 
     public UIControl(ParticleEmitter emitter,
                      Slider speedSlider, Slider particleSlider, Slider lifeSlider, Slider directionSlider,

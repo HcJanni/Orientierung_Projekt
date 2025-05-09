@@ -4,11 +4,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class TriangleObstacle extends Obstacle {
-    private float size;
 
     public TriangleObstacle(float x, float y, float size) {
         super(x, y, size); // radius = half of edge length
-        this.size = size;
     }
 
     @Override
@@ -31,6 +29,8 @@ public class TriangleObstacle extends Obstacle {
 
 
         gc.setLineWidth(1);
+        gc.setFill(Color.GREY);
+        gc.fillPolygon(xPoints, yPoints, 3);
         gc.strokePolygon(xPoints, yPoints, 3);
     }
 

@@ -40,8 +40,9 @@ public class DropObstacle extends Obstacle {
             yFull[2 * steps - 1 - i] = 2 * position.getY() - yPoints[i];
         }
 
-        gc.setFill(Color.INDIANRED);
+        gc.setFill(Color.GREY);
         gc.fillPolygon(xFull, yFull, xFull.length);
+        gc.strokePolygon(xFull, yFull, xFull.length);
     }
 
     @Override
