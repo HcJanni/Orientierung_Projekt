@@ -17,6 +17,8 @@ public class Particle {
     private Vector velocity; //Aenderungsrate der Position
     private Vector acceleration; //Aenderungsrate der Geschwindigkeit
 
+    private Color color;
+
     private final float initialY;
     private final float DURCHMESSER = 10.0f;
     private final float RADIUS = DURCHMESSER / 2.0f;
@@ -35,6 +37,7 @@ public class Particle {
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
         this.initialY = position.getY();
+        this.color = new Color(0,0,1,1); //Default = Blau
     }
 
     public Particle(float x, float y){
@@ -47,6 +50,15 @@ public class Particle {
         this.lifespan = 1.0f; // Default lifespan of 1 second
         this.isDead = false;
         this.initialY = position.getY();
+        this.color = new Color(0,0,1,1); // Default Blau
+    }
+
+    public Color getColor(){
+        return this.color;
+    }
+
+    public void setColor(double r, double g, double b, double alpha){
+        this.color = new Color(r, g, b, alpha);
     }
 
     public float getInitialY() {
@@ -156,8 +168,7 @@ public class Particle {
         Vector flowCorrection = GLOBAL_FLOW.subtractVector(velocity).scaleVector(0.5f); // Adjust 0.05f for smoothness
         velocity.add(flowCorrection);
 
-        this.acceleration.scale(0.3f);
-
+        this.acceleration.scale(0);
     }
 
     public void draw(GraphicsContext gc) {
@@ -167,18 +178,17 @@ public class Particle {
 
         // Visualisierung: je höher der Druck, desto roter
         float maxPressure = 2.0f; // Skaliere je nach Simulation
-        float intensity = Math.min(dynamicPressure / maxPressure, 1f);
-        Color color = new Color(intensity, 0, 1.0 - intensity, 1.0);
-
-        if (speed < 0.01f) {
-            gc.setFill(Color.GRAY); // zeigt: steht quasi still
+        float intensity = Math.min(dynamicPressure / maxPressure, 1.0f);
+        this.setColor(intensity, 0, 1.0 - intensity, 1.0);
+        
+        if (speed < 0.1f) {
+            gc.setFill(this.color); // zeigt: steht quasi still
         } else {
-            gc.setFill(color);
+            gc.setFill(this.color);
         }
 
-        gc.setFill(color);
+        gc.setFill(this.color);
         gc.fillOval(position.getX(), position.getY(), radius, radius);
-
     }
 
     public void applyDrag(float rho, float dragCoefficient) {

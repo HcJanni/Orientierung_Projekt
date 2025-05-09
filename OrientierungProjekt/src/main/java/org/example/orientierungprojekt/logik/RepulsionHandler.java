@@ -84,7 +84,6 @@ public class RepulsionHandler {
         particle.applyForce(dragForce);
     }
 
-
     public static void applyTriangleRepulsion(Particle particle, TriangleObstacle obstacle) {
         float r = obstacle.getRadius();
         float cx = obstacle.getPosition().getX();
